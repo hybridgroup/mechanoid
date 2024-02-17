@@ -73,20 +73,17 @@ flowchart TD
     subgraph Application
         App
     end
-    App-->API
+    App-->Engine
     subgraph Modules
         WASM1
         WASM2
     end
     subgraph Engine
-        API
         FileStore
         Interpreter
         Bridge
     end
-    API-->Interpreter
-    API-->FileStore
-    API-->Bridge
+    FileStore-->Modules
     Interpreter-->Modules
     Interpreter-->Bridge
     Bridge--->Machine
@@ -114,11 +111,11 @@ flowchart TD
 
 #### Application
 
-What the developer who uses TinyWASM is creating.
+The host application that the developer who uses TinyWASM is creating.
 
 #### Modules
 
-What developers who are creating code for this Application are writing.
+The WASM modules that developers who are creating code for this Application are writing.
 
 #### Engine
 
