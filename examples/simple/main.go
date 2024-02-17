@@ -5,33 +5,46 @@ import (
 	"time"
 
 	"github.com/hybridgroup/tinywasm/engine"
+	"github.com/hybridgroup/tinywasm/interp/wasman"
 )
 
 //go:embed ping.wasm
-var binaryModule []byte
+var pingModule []byte
 
 func main() {
+	time.Sleep(5 * time.Second)
+
+	println("TinyWASM engine starting...")
 	eng := engine.NewEngine()
+
+	println("Using interpreter...")
+	eng.UseInterpreter(&wasman.Interpreter{})
+
+	println("Initializing engine...")
 	eng.Init()
 
+	println("Defining func...")
 	if err := eng.Interpreter.DefineFunc("hosted", "pong", pongFunc); err != nil {
 		println(err.Error())
 		return
 	}
 
-	mod, err := eng.Interpreter.Load(binaryModule)
+	println("Loading module...")
+	if err := eng.Interpreter.Load(pingModule); err != nil {
+		println(err.Error())
+		return
+	}
+
+	println("Running module...")
+	ins, err := eng.Interpreter.Run()
 	if err != nil {
 		println(err.Error())
 		return
 	}
 
-	if err := eng.Interpreter.Run(); err != nil {
-		println(err.Error())
-		return
-	}
-
 	for {
-		mod.Call("ping")
+		println("Calling ping...")
+		ins.Call("ping")
 
 		time.Sleep(1 * time.Second)
 	}
