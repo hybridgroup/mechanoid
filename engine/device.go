@@ -1,5 +1,5 @@
 package engine
 
-type device interface {
+type Device interface {
 	Init() error
 }

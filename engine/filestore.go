@@ -1,6 +1,6 @@
 package engine
 
-type filestore interface {
+type FileStore interface {
 	Init() error
 	List() ([]string, error)
 	Load(name string) ([]byte, error)

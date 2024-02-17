@@ -1,5 +1,5 @@
 package engine
 
-type modular interface {
+type Instance interface {
 	Call(name string, args ...interface{}) error
 }
