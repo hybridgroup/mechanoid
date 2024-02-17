@@ -65,10 +65,10 @@ func (i *Interpreter) Halt() error {
 }
 
 func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) error {
-	fn := func(uint32) {
+	fn := func() {
 		f.(func())()
 	}
-	if err := wasmaneng.DefineFunc10(i.linker, moduleName, funcName, fn); err != nil {
+	if err := wasmaneng.DefineFunc(i.linker, moduleName, funcName, fn); err != nil {
 		return err
 	}
 	return nil
