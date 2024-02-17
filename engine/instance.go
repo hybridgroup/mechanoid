@@ -1,5 +1,5 @@
 package engine
 
 type Instance interface {
-	Call(name string, args ...interface{}) error
+	Call(name string, args ...interface{}) (interface{}, error)
 }

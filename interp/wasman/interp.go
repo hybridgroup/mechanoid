@@ -64,12 +64,55 @@ func (i *Interpreter) Halt() error {
 	return nil
 }
 
+// TODO: better implementation using generics?
 func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) error {
-	fn := func() {
-		f.(func())()
+	switch f.(type) {
+	case func():
+		if err := wasmaneng.DefineFunc(i.linker, moduleName, funcName, f.(func())); err != nil {
+			return err
+		}
+		return nil
+	case func() int32:
+		if err := wasmaneng.DefineFunc01(i.linker, moduleName, funcName, f.(func() int32)); err != nil {
+			return err
+		}
+		return nil
+	case func(int32):
+		if err := wasmaneng.DefineFunc10(i.linker, moduleName, funcName, f.(func(int32))); err != nil {
+			return err
+		}
+		return nil
+	case func(int32) int32:
+		if err := wasmaneng.DefineFunc11(i.linker, moduleName, funcName, f.(func(int32) int32)); err != nil {
+			return err
+		}
+		return nil
+	case func(int32, int32) int32:
+		if err := wasmaneng.DefineFunc21(i.linker, moduleName, funcName, f.(func(uint32, uint32) uint32)); err != nil {
+			return err
+		}
+		return nil
+	case func() uint32:
+		if err := wasmaneng.DefineFunc01(i.linker, moduleName, funcName, f.(func() uint32)); err != nil {
+			return err
+		}
+		return nil
+	case func(uint32):
+		if err := wasmaneng.DefineFunc10(i.linker, moduleName, funcName, f.(func(uint32))); err != nil {
+			return err
+		}
+		return nil
+	case func(uint32) uint32:
+		if err := wasmaneng.DefineFunc11(i.linker, moduleName, funcName, f.(func(uint32) uint32)); err != nil {
+			return err
+		}
+		return nil
+	case func(uint32, uint32) uint32:
+		if err := wasmaneng.DefineFunc21(i.linker, moduleName, funcName, f.(func(uint32, uint32) uint32)); err != nil {
+			return err
+		}
+		return nil
+	default:
+		return engine.ErrInvalidFuncType
 	}
-	if err := wasmaneng.DefineFunc(i.linker, moduleName, funcName, fn); err != nil {
-		return err
-	}
-	return nil
 }

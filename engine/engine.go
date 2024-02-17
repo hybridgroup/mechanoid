@@ -2,7 +2,10 @@ package engine
 
 import "errors"
 
-var errNoInterpreter = errors.New("engine: no interpreter")
+var (
+	errNoInterpreter   = errors.New("engine: no interpreter")
+	ErrInvalidFuncType = errors.New("engine: invalid function type")
+)
 
 type Engine struct {
 	Interpreter Interpreter
