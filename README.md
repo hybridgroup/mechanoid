@@ -2,6 +2,59 @@
 
 TinyWASM is a WebAssembly runtime environment for embedded microcontrollers written using TinyGo.
 
+
+## How to use
+
+### Simple
+
+Loads an embedded WASM module and then runs it by calling the exported `Ping()` function:
+
+```go
+package main
+
+import (
+	_ "embed"
+	"time"
+
+	"github.com/hybridgroup/tinywasm/engine"
+)
+
+//go:embed ping.wasm
+var binaryModule []byte
+
+func main() {
+	eng := engine.NewEngine()
+	eng.Init()
+
+	if err := eng.Interpreter.DefineFunc("hosted", "pong", pongFunc); err != nil {
+		println(err.Error())
+		return
+	}
+
+	mod, err := eng.Interpreter.Load(binaryModule)
+	if err != nil {
+		println(err.Error())
+		return
+	}
+
+	if err := eng.Interpreter.Run(); err != nil {
+		println(err.Error())
+		return
+	}
+
+	for {
+		mod.Call("ping")
+
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func pongFunc() {
+	println("pong")
+}
+```
+
+
 ## Architecture
 
 ```mermaid
@@ -16,12 +69,12 @@ flowchart TD
     end
     subgraph Engine
         API
-        FileSystem
+        FileStore
         Interpreter
         Bridge
     end
     API-->Interpreter
-    API-->FileSystem
+    API-->FileStore
     API-->Bridge
     Interpreter-->Modules
     Interpreter-->Bridge
@@ -74,8 +127,8 @@ Wrappers around low-level hardware interfaces such as GPIO or I2C that can be us
 
 ## Goals
 
-- Able to run small WASM modules designed for specific embedded runtime interfaces.
-- Hot loading/unloading of WASM modules.
-- Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others.
-- Configurable system to allow the bridge interface to host capabilities to be defined per application.
-- Local storage system for WASM modules.
+- [ ] Able to run small WASM modules designed for some specific embedded runtime interfaces.
+- [ ] Hot loading/unloading of WASM modules.
+- [ ] Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others.
+- [ ] Configurable system to allow the bridge interface to host capabilities to be defined per application.
+- [ ] Local storage system for WASM modules.
