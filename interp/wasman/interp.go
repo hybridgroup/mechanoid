@@ -16,6 +16,10 @@ type Interpreter struct {
 	instance *wasmaneng.Instance
 }
 
+func (i *Interpreter) Name() string {
+	return "wasman"
+}
+
 func (i *Interpreter) Init() error {
 	i.linker = wasmaneng.NewLinker(config.LinkerConfig{})
 
