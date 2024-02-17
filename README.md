@@ -1,1 +1,81 @@
-# tinywasm
+# TinyWASM
+
+TinyWASM is a WebAssembly runtime environment for embedded microcontrollers written using TinyGo.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Application
+        App
+    end
+    App-->API
+    subgraph Modules
+        WASM1
+        WASM2
+    end
+    subgraph Engine
+        API
+        FileSystem
+        Interpreter
+        Bridge
+    end
+    API-->Interpreter
+    API-->FileSystem
+    API-->Bridge
+    Interpreter-->Modules
+    Interpreter-->Bridge
+    Bridge--->Machine
+    Bridge--->Devices
+    Bridge--->Network
+    subgraph Devices
+        Sensor
+        Displayer
+        LEDSetter
+    end
+    subgraph Network
+        Net
+        Bluetooth
+    end
+    subgraph Machine
+        GPIO
+        ADC
+        I2C
+        SPI
+    end
+    Displayer-->SPI
+    Sensor-->GPIO
+    Sensor-->I2C
+```
+
+#### Application
+
+What the developer who uses TinyWASM is creating.
+
+#### Modules
+
+What developers who are creating code for this Application are writing.
+
+#### Engine
+
+The capabilities that the Application uses/exposes for Modules.
+
+#### Devices
+
+Wrappers around specific devices such as displays or sensors that can be used by the Application and/or Modules.
+
+#### Network
+
+Wrappers around specific networking capabilities such as WiFi or Bluetooth that can be used by the Application and/or Modules.
+
+#### Machine
+
+Wrappers around low-level hardware interfaces such as GPIO or I2C that can be used by the Application and/or Modules.
+
+## Goals
+
+- Able to run small WASM modules designed for specific embedded runtime interfaces.
+- Hot loading/unloading of WASM modules.
+- Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others.
+- Configurable system to allow the bridge interface to host capabilities to be defined per application.
+- Local storage system for WASM modules.
