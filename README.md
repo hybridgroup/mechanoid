@@ -81,15 +81,15 @@ flowchart TD
     subgraph Engine
         FileStore
         Interpreter
-        Bridge
+        Devices
     end
     FileStore-->Modules
     Interpreter-->Modules
-    Interpreter-->Bridge
-    Bridge--->Machine
-    Bridge--->Devices
-    Bridge--->Network
-    subgraph Devices
+    Interpreter-->Devices
+    Devices--->Machine
+    Devices--->Hardware
+    Devices--->Network
+    subgraph Hardware
         Sensor
         Displayer
         LEDSetter
