@@ -33,8 +33,7 @@ func (i *Interpreter) Init() error {
 func (i *Interpreter) Load(code []byte) error {
 	conf := config.ModuleConfig{
 		Recover: true,
-		// TODO: add logger
-		//Logger:  bridge.EchoText,
+		Logger:  i.Log,
 	}
 
 	var err error
@@ -119,4 +118,8 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) err
 	default:
 		return engine.ErrInvalidFuncType
 	}
+}
+
+func (i *Interpreter) Log(msg string) {
+	println(msg)
 }
