@@ -44,15 +44,10 @@ Try the `ls` command.
 
 You do not yet have any WASM files in the Flash storage. Let's put one on the device using the `save` command.
 
+The easiest way to do this is the `savefile.sh` script. Press `CTRL-C` to return to your shell, then run the following command (substitute the correct port name for `/dev/ttyACM0` as needed):
 
 ```
-==> save ping.wasm 52
-```
-
-Once you type the save command, type `CTRL-C` then you can use the Linux `cat` command to send the WASM file:
-
-```
-cat ./ping.wasm > /dev/ttyACM0
+./examples/filestore/savefile.sh ./examples/filestore/ping.wasm /dev/ttyACM0
 ```
 
 Now connect again to the board, and you should not see the file listed using the `ls` command:
@@ -67,7 +62,6 @@ Connected to /dev/ttyACM0. Press Ctrl-C to exit.
  File Store:  
 -------------------------------------
 53 ping.wasm
-53 ping2.wasm
 
 -------------------------------------
 ```
@@ -75,8 +69,8 @@ Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 You can now load the module:
 
 ```
-==> load ping2.wasm
-load: ping2.wasm
+==> load ping.wasm
+load: ping.wasm
 module loaded
 ```
 
