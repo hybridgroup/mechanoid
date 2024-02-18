@@ -7,4 +7,5 @@ type Interpreter interface {
 	Run() (Instance, error)
 	Halt() error
 	DefineFunc(module, name string, f interface{}) error
+	Log(msg string)
 }

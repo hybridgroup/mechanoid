@@ -10,11 +10,13 @@ var (
 type Engine struct {
 	Interpreter Interpreter
 	FileStore   FileStore
-	Bridge      Bridge
+	Devices     []Device
 }
 
 func NewEngine() *Engine {
-	return &Engine{}
+	return &Engine{
+		Devices: []Device{},
+	}
 }
 
 func (e *Engine) UseInterpreter(interp Interpreter) {
@@ -42,12 +44,10 @@ func (e *Engine) Init() error {
 		}
 	}
 
-	if e.Bridge != nil {
-		println("Initializing bridge...")
-		for _, d := range e.Bridge.Devices() {
-			if err := d.Init(); err != nil {
-				return err
-			}
+	println("Initializing devices...")
+	for _, d := range e.Devices {
+		if err := d.Init(); err != nil {
+			return err
 		}
 	}
 	return nil
