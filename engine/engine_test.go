@@ -49,3 +49,6 @@ func (i *mockInterpreter) Halt() error {
 func (i *mockInterpreter) DefineFunc(modulename, funcname string, f interface{}) error {
 	return nil
 }
+
+func (i *mockInterpreter) Log(msg string) {
+}
