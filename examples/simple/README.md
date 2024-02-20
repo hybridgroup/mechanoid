@@ -1,5 +1,7 @@
 # Simple
 
+Simple example that loads the `ping.wasm` program that has is embedded into the runtime.
+
 ```
-tinygo build -o simple.uf2 -size short -target pybadge -opt=2 ./examples/simple
+tinygo flash -size short -target pybadge -monitor ./examples/simple
 ```
