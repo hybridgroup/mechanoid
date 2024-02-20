@@ -1,12 +1,11 @@
 package main
 
 import (
-	"strconv"
-
 	"github.com/aykevl/board"
 	"github.com/aykevl/tinygl"
 	"github.com/aykevl/tinygl/style"
 	"github.com/aykevl/tinygl/style/basic"
+	"github.com/hybridgroup/tinywasm/convert"
 	"tinygo.org/x/drivers/pixel"
 )
 
@@ -30,8 +29,8 @@ func NewDisplayDevice[T pixel.Color](disp board.Displayer[T]) DisplayDevice[T] {
 	screen := tinygl.NewScreen[T](disp, buf, board.Display.PPI())
 	theme := basic.NewTheme(style.NewScale(scalePercent), screen)
 	header := theme.NewText("Hello, TinyWASM")
-	pingText := theme.NewText("Ping")
-	pongText := theme.NewText("Pong")
+	pingText := theme.NewText("waiting...")
+	pongText := theme.NewText("waiting...")
 
 	vbox := theme.NewVBox(header, pingText, pongText)
 	screen.SetChild(vbox)
@@ -50,11 +49,13 @@ func NewDisplayDevice[T pixel.Color](disp board.Displayer[T]) DisplayDevice[T] {
 }
 
 func (d *DisplayDevice[T]) Ping(count int) {
-	d.PingText.SetText("Ping " + strconv.Itoa(count))
+	msg := "Ping: " + convert.IntToString(count)
+	d.PingText.SetText(msg)
 	d.Screen.Update()
 }
 
 func (d *DisplayDevice[T]) Pong(count int) {
-	d.PongText.SetText("Pong " + strconv.Itoa(count))
+	msg := "Pong: " + convert.IntToString(count)
+	d.PongText.SetText(msg)
 	d.Screen.Update()
 }

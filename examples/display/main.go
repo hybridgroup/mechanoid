@@ -28,7 +28,6 @@ func main() {
 	println("Initializing engine...")
 	eng.Init()
 
-	println("Defining func...")
 	if err := eng.Interpreter.DefineFunc("hosted", "pong", func() {
 		pongCount++
 		println("pong", pongCount)
@@ -52,10 +51,10 @@ func main() {
 	}
 
 	for {
-		pingCount++
-		println("ping", pingCount)
-		display.Ping(pingCount)
+		println("Ping", pingCount)
 		ins.Call("ping")
+		pingCount++
+		display.Ping(pingCount)
 
 		time.Sleep(1 * time.Second)
 	}

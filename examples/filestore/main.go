@@ -31,7 +31,6 @@ func main() {
 	println("Initializing engine...")
 	eng.Init()
 
-	println("Defining func...")
 	if err := eng.Interpreter.DefineFunc("hosted", "pong", pongFunc); err != nil {
 		println(err.Error())
 		return
