@@ -1,7 +1,6 @@
 package main
 
 import (
-	"machine"
 	"time"
 	"unsafe"
 
@@ -143,10 +142,10 @@ func ls(argv []string) {
 
 func lsblk(argv []string) {
 	b := make([]byte, 4)
-	binary.BigEndian.PutUint32(b, uint32(machine.FlashDataStart()))
+	binary.BigEndian.PutUint32(b, uint32(dataStart()))
 	start := hex.EncodeToString(b)
 
-	binary.BigEndian.PutUint32(b, uint32(machine.FlashDataEnd()))
+	binary.BigEndian.PutUint32(b, uint32(dataEnd()))
 	end := hex.EncodeToString(b)
 
 	print(
