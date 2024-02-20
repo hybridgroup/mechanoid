@@ -12,11 +12,11 @@ func WasmPtrToString(ptr uint32, size uint32) string {
 
 // StringToWasmPtr returns a pointer and size pair for the given string in a way
 // compatible with WebAssembly numeric types.
+// The returned pointer aliases the string hence the string must be kept alive
+// until ptr is no longer needed.
 func StringToWasmPtr(s string) (uint32, uint32) {
-	buf := []byte(s)
-	ptr := &buf[0]
-	unsafePtr := uintptr(unsafe.Pointer(ptr))
-	return uint32(unsafePtr), uint32(len(buf))
+	ptr := unsafe.Pointer(unsafe.StringData(s))
+	return uint32(uintptr(ptr)), uint32(len(s))
 }
 
 // StringToInt returns an integer from a string without having to use strconv package.
