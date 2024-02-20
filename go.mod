@@ -2,14 +2,19 @@ module github.com/hybridgroup/tinywasm
 
 go 1.22.0
 
-replace github.com/c0mm4nd/wasman => ../../wasman
+replace github.com/c0mm4nd/wasman => github.com/hybridgroup/wasman v0.0.0-20240220163037-55a51f00984a
+
+require (
+	github.com/aykevl/board v0.0.0-20240106144210-80ca76f77def
+	github.com/aykevl/tinygl v0.0.0-20240131130748-3033a2fd9182
+	github.com/c0mm4nd/wasman v0.0.0-20220422074058-87e38ef26abd
+	tinygo.org/x/drivers v0.26.1-0.20231206190939-3fabdc5c9680
+	tinygo.org/x/tinyfs v0.3.1-0.20231212053859-32ae3f6bbad9
+)
 
 require (
 	fyne.io/fyne/v2 v2.3.4 // indirect
 	fyne.io/systray v1.10.1-0.20230403195833-7dc3c09283d6 // indirect
-	github.com/aykevl/board v0.0.0-20240106144210-80ca76f77def // indirect
-	github.com/aykevl/tinygl v0.0.0-20240131130748-3033a2fd9182 // indirect
-	github.com/c0mm4nd/wasman v0.0.0-20220422074058-87e38ef26abd // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fredbi/uri v0.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
@@ -37,6 +42,4 @@ require (
 	golang.org/x/text v0.7.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/js/dom v0.0.0-20210725211120-f030747120f2 // indirect
-	tinygo.org/x/drivers v0.26.1-0.20231206190939-3fabdc5c9680 // indirect
-	tinygo.org/x/tinyfs v0.3.1-0.20231212053859-32ae3f6bbad9 // indirect
 )
