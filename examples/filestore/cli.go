@@ -3,6 +3,7 @@ package main
 import (
 	"machine"
 	"time"
+	"unsafe"
 
 	"encoding/binary"
 	"encoding/hex"
@@ -33,6 +34,8 @@ var (
 		"rm":    rm,
 		"run":   run,
 		"halt":  halt,
+		"ping":  ping,
+		"hello": hello,
 	}
 )
 
@@ -95,6 +98,13 @@ func cli() {
 }
 
 func runCommand(line string) {
+	defer func() {
+		p := recover()
+		if p != nil {
+			println("panic:", p)
+		}
+	}()
+
 	argv := strings.SplitN(strings.TrimSpace(line), " ", -1)
 	cmd := argv[0]
 	cmdfn, ok := commands[cmd]
@@ -152,7 +162,13 @@ func lsblk(argv []string) {
 func load(argv []string) {
 	println("load: " + argv[1])
 
-	data := make([]byte, 1024)
+	n, err := eng.FileStore.FileSize(argv[1])
+	if err != nil {
+		println("error loading file:", err.Error())
+		return
+	}
+
+	data := make([]byte, n)
 	if err := eng.FileStore.Load(argv[1], data); err != nil {
 		println("error loading file:", err.Error())
 		return
@@ -211,7 +227,6 @@ func rm(argv []string) {
 var (
 	instance engine.Instance
 	running  bool
-	runCh    chan struct{}
 )
 
 func run(argv []string) {
@@ -230,9 +245,7 @@ func run(argv []string) {
 		return
 	}
 
-	runCh = make(chan struct{})
-	go pinger()
-
+	running = true
 	println("running.")
 }
 
@@ -243,26 +256,47 @@ func halt(argv []string) {
 	}
 
 	println("halting...")
-	runCh <- struct{}{}
-	close(runCh)
 	running = false
 	println("halted..")
 }
 
-func pinger() {
-	running = true
+func ping(argv []string) {
+	if !running {
+		println("not running. use 'run' first.")
+		return
+	}
 
-	for {
+	count := convertToInt(argv[1])
+
+	for i := 0; i < count; i++ {
 		println("Ping...")
 		instance.Call("ping")
-
-		select {
-		case <-runCh:
-			return
-		default:
-			time.Sleep(1 * time.Second)
-		}
 	}
+}
+
+var buf [32]byte
+
+func hello(argv []string) {
+	if !running {
+		println("not running. use 'run' first.")
+		return
+	}
+
+	results, err := instance.Call("hello", uint32(uintptr(unsafe.Pointer(&buf[0]))), uint32(len(buf)))
+	if err != nil {
+		println(err.Error())
+		return
+	}
+
+	if len(results.([]uint64)) != 1 {
+		println("unexpected result")
+		return
+	}
+
+	b := results.([]uint64)
+	size := uint32(b[0] & 0xffffffff)
+	str := string(buf[:size])
+	println("hello:", str)
 }
 
 func convertToInt(s string) int {

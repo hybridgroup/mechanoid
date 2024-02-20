@@ -8,7 +8,7 @@ import (
 	"github.com/c0mm4nd/wasman/wasm"
 )
 
-var heapMemory = make([]byte, 65536*2)
+var heapMemory = make([]byte, 65536)
 
 type Interpreter struct {
 	linker   *wasmaneng.Linker
