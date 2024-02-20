@@ -14,4 +14,5 @@ type FileStore interface {
 	Load(name string, data []byte) error
 	Save(name string, data []byte) error
 	Remove(name string) error
+	FileSize(name string) (int64, error)
 }

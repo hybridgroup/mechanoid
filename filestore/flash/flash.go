@@ -143,3 +143,16 @@ func (fs *FileStore) Remove(name string) error {
 
 	return fs.lfs.Remove(name)
 }
+
+func (fs *FileStore) FileSize(name string) (int64, error) {
+	if fs.lfs == nil {
+		return 0, errNoFileStore
+	}
+
+	info, err := fs.lfs.Stat(name)
+	if err != nil {
+		return 0, err
+	}
+
+	return info.Size(), nil
+}
