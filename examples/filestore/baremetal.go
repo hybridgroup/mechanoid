@@ -14,9 +14,9 @@ var (
 )
 
 func dataStart() uint32 {
-	return machine.FlashDataStart()
+	return uint32(machine.FlashDataStart())
 }
 
 func dataEnd() uint32 {
-	return machine.FlashDataEnd()
+	return uint32(machine.FlashDataEnd())
 }

@@ -4,7 +4,7 @@ Command line interface to load/run WASM modules using the onboard Flash storage.
 
 
 ```
-tinygo flash -size short -target pybadge ./examples/filestore
+tinygo flash -size short -target pybadge -monitor ./examples/filestore
 ```
 
 ## How to use
@@ -50,7 +50,7 @@ The easiest way to do this is the `savefile.sh` script. Press `CTRL-C` to return
 ./examples/filestore/savefile.sh ./examples/filestore/ping.wasm /dev/ttyACM0
 ```
 
-Now connect again to the board, and you should not see the file listed using the `ls` command:
+Now connect again to the board, and now you should see the file listed using the `ls` command:
 
 ```
 $ tinygo monitor
@@ -61,7 +61,7 @@ Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 -------------------------------------
  File Store:  
 -------------------------------------
-53 ping.wasm
+370 ping.wasm
 
 -------------------------------------
 ```
@@ -79,8 +79,19 @@ And then start it running:
 ```
 ==> run
 starting...
+building index space
+initializing memory
+initializing functions
+initializing globals
+running start func
 running.
-==> Ping...
+```
+
+Use the `ping` command:
+
+```
+==> ping 3
+Ping...
 pong
 Ping...
 pong
@@ -88,4 +99,4 @@ Ping...
 pong
 ```
 
-Use the `halt` command to stop it.
+Use the `halt` command to stop the module. You can load another module now.
