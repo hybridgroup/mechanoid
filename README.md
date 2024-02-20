@@ -135,8 +135,8 @@ Wrappers around low-level hardware interfaces such as GPIO or I2C that can be us
 
 ## Goals
 
-- [ ] Able to run small WASM modules designed for some specific embedded runtime interfaces.
-- [ ] Hot loading/unloading of WASM modules.
+- [X] Able to run small WASM modules designed for specific embedded runtime interfaces.
+- [X] Hot loading/unloading of WASM modules.
+- [X] Local storage system for WASM modules.
 - [ ] Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others.
 - [ ] Configurable system to allow the bridge interface to host capabilities to be defined per application.
-- [ ] Local storage system for WASM modules.
