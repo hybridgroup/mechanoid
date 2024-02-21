@@ -200,8 +200,8 @@ github.com/hashicorp/logutils v1.0.0/go.mod h1:QIAnNjmIWmVIIkWDTG1z5v++HQmx9WQRO
 github.com/hashicorp/mdns v1.0.0/go.mod h1:tL+uN++7HEJ6SQLQ2/p+z2pH24WQKWjBPkE0mNTz8vQ=
 github.com/hashicorp/memberlist v0.1.3/go.mod h1:ajVTdAv/9Im8oMAAj5G31PhhMCZJV2pPBoIllUwCN7I=
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
-github.com/hybridgroup/wasman v0.0.0-20240220163037-55a51f00984a h1:FLDq23esPiuTFbgCpl0B879/Fv+4C8pzco1IxKySekY=
-github.com/hybridgroup/wasman v0.0.0-20240220163037-55a51f00984a/go.mod h1:7nHjHhB5td0mKTDIQBNtZz/b0+/4C50ryCEiz8NpBXs=
+github.com/hybridgroup/wasman v0.0.0-20240221230704-63fe31eeb0c3 h1:mf0y6sLS0XdKyd8SELtZT1M0wHBsoM5+CDFUH8kcNKs=
+github.com/hybridgroup/wasman v0.0.0-20240221230704-63fe31eeb0c3/go.mod h1:7nHjHhB5td0mKTDIQBNtZz/b0+/4C50ryCEiz8NpBXs=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=

@@ -2,7 +2,9 @@ module github.com/hybridgroup/tinywasm
 
 go 1.22.0
 
-replace github.com/c0mm4nd/wasman => github.com/hybridgroup/wasman v0.0.0-20240220163037-55a51f00984a
+replace github.com/c0mm4nd/wasman => github.com/hybridgroup/wasman v0.0.0-20240221230704-63fe31eeb0c3
+
+//replace github.com/c0mm4nd/wasman => ../../wasman
 
 require (
 	github.com/aykevl/board v0.0.0-20240106144210-80ca76f77def
