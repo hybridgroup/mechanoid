@@ -123,3 +123,7 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) err
 func (i *Interpreter) Log(msg string) {
 	println(msg)
 }
+
+func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
+	return i.instance.Memory.Value[ptr : ptr+sz], nil
+}

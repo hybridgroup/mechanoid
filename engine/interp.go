@@ -8,4 +8,5 @@ type Interpreter interface {
 	Halt() error
 	DefineFunc(module, name string, f interface{}) error
 	Log(msg string)
+	MemoryData(ptr, sz uint32) ([]byte, error)
 }

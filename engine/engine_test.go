@@ -52,3 +52,7 @@ func (i *mockInterpreter) DefineFunc(modulename, funcname string, f interface{})
 
 func (i *mockInterpreter) Log(msg string) {
 }
+
+func (i *mockInterpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
+	return nil, nil
+}
