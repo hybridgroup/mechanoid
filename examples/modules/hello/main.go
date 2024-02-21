@@ -1,26 +1,18 @@
+//go:build tinygo
+
 package main
 
-import (
-	"unsafe"
+//go:export hola
+func hola(msg string) uint32
 
-	"github.com/hybridgroup/tinywasm/convert"
-)
+const msg = "Hello, WebAssembly!"
 
-var (
-	x int
-)
+var msgdata [64]byte
 
 //go:export hello
-func hello(ptr uint32, size uint32) uint32 {
-	x++
-	msg := "Hello, World " + convert.IntToString(x)
-
-	if len(msg) > int(size) {
-		msg = msg[:size]
-	}
-	copy(*(*[]byte)(unsafe.Pointer(&ptr)), msg)
-
-	return uint32(len(msg))
+func hello() {
+	copy(msgdata[:], []byte(msg))
+	hola(string(msgdata[:len(msg)]))
 }
 
 func main() {}

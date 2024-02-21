@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	"unsafe"
 
 	"encoding/binary"
 	"encoding/hex"
@@ -265,15 +264,20 @@ func ping(argv []string) {
 		return
 	}
 
+	if len(argv) < 2 {
+		println("usage: ping <count>")
+		return
+	}
 	count := convertToInt(argv[1])
 
 	for i := 0; i < count; i++ {
 		println("Ping...")
-		instance.Call("ping")
+		if _, err := instance.Call("ping"); err != nil {
+			println(err.Error())
+			return
+		}
 	}
 }
-
-var buf [32]byte
 
 func hello(argv []string) {
 	if !running {
@@ -281,21 +285,24 @@ func hello(argv []string) {
 		return
 	}
 
-	results, err := instance.Call("hello", uint32(uintptr(unsafe.Pointer(&buf[0]))), uint32(len(buf)))
+	// ptr, sz := convert.StringToWasmPtr("hello from tinywasm")
+	// _, err := instance.Call("hello", ptr, sz)
+	// if err != nil {
+	// 	println(err.Error())
+	// 	return
+	// }
+	_, err := instance.Call("hello")
 	if err != nil {
 		println(err.Error())
 		return
 	}
+	// v := rtn.([]uint64)
+	// if len(v) != 2 {
+	// 	println("unexpected return value", len(v))
+	// 	return
+	// }
 
-	if len(results.([]uint64)) != 1 {
-		println("unexpected result")
-		return
-	}
-
-	b := results.([]uint64)
-	size := uint32(b[0] & 0xffffffff)
-	str := string(buf[:size])
-	println("hello:", str)
+	// println("hello returned:", convert.WasmPtrToString(uint32(v[0]), uint32(v[1])))
 }
 
 func convertToInt(s string) int {

@@ -11,13 +11,14 @@
 	"rtlib":         "compiler-rt",
 	"scheduler":     "none",
 	"cflags": [
+        "-mno-bulk-memory",
 		"-mnontrapping-fptoint",
 		"-msign-ext"
 	],
 	"ldflags": [
 		"--stack-first",
 		"--no-demangle",
-		"--entry=_initialize",
+		"--no-entry",
 		"--import-memory",
 		"--initial-memory=65536",
 		"--max-memory=65536",
