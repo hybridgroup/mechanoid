@@ -15,8 +15,8 @@ func WasmPtrToString(ptr uint32, size uint32) string {
 // The returned pointer aliases the string hence the string must be kept alive
 // until ptr is no longer needed.
 func StringToWasmPtr(s string) (uint32, uint32) {
-	ptr := unsafe.Pointer(unsafe.StringData(s))
-	return uint32(uintptr(ptr)), uint32(len(s))
+	ptr := uintptr(unsafe.Pointer(unsafe.StringData(s)))
+	return uint32(ptr), uint32(len(s))
 }
 
 // StringToInt returns an integer from a string without having to use strconv package.
