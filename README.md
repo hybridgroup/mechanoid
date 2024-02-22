@@ -102,7 +102,8 @@ Calling ping...
 pong
 ```
 
-See the `examples` for more information.
+More examples are available here:
+https://github.com/hybridgroup/mechanoid-examples
 
 ## Architecture
 
