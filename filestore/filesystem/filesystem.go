@@ -3,7 +3,7 @@ package filesystem
 import (
 	"errors"
 
-	"github.com/hybridgroup/tinywasm/engine"
+	"github.com/hybridgroup/mechanoid/engine"
 )
 
 var errNoFileStore = errors.New("no file store")

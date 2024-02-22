@@ -8,7 +8,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/hybridgroup/tinywasm/engine"
+	"github.com/hybridgroup/mechanoid/engine"
 	"tinygo.org/x/tinyfs"
 	"tinygo.org/x/tinyfs/littlefs"
 )

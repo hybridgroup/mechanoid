@@ -1,7 +1,7 @@
 package wasman
 
 import (
-	"github.com/hybridgroup/tinywasm/engine"
+	"github.com/hybridgroup/mechanoid/engine"
 
 	wasmaneng "github.com/c0mm4nd/wasman"
 	"github.com/c0mm4nd/wasman/config"

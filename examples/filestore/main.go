@@ -4,8 +4,8 @@ import (
 	_ "embed"
 	"time"
 
-	"github.com/hybridgroup/tinywasm/engine"
-	"github.com/hybridgroup/tinywasm/interp/wasman"
+	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/hybridgroup/mechanoid/interp/wasman"
 )
 
 var (
@@ -19,7 +19,9 @@ func main() {
 	eng = engine.NewEngine()
 
 	println("Using interpreter...")
-	eng.UseInterpreter(&wasman.Interpreter{})
+	eng.UseInterpreter(&wasman.Interpreter{
+		Memory: make([]byte, 65536),
+	})
 
 	println("Use file store...")
 	eng.UseFileStore(fs)

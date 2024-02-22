@@ -5,7 +5,7 @@ package main
 import (
 	"machine"
 
-	"github.com/hybridgroup/tinywasm/filestore/flash"
+	"github.com/hybridgroup/mechanoid/filestore/flash"
 )
 
 var (

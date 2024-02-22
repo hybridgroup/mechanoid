@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/aykevl/board"
-	"github.com/hybridgroup/tinywasm/engine"
-	"github.com/hybridgroup/tinywasm/interp/wasman"
+	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/hybridgroup/mechanoid/interp/wasman"
 )
 
 //go:embed ping.wasm

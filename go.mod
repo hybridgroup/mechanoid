@@ -1,4 +1,4 @@
-module github.com/hybridgroup/tinywasm
+module github.com/hybridgroup/mechanoid
 
 go 1.22.0
 

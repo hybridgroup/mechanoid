@@ -1,13 +1,15 @@
 package main
 
 import (
+	"runtime"
 	"time"
 
 	"encoding/binary"
 	"encoding/hex"
 	"strings"
 
-	"github.com/hybridgroup/tinywasm/engine"
+	"github.com/hybridgroup/mechanoid/convert"
+	"github.com/hybridgroup/mechanoid/engine"
 )
 
 const consoleBufLen = 64
@@ -158,7 +160,17 @@ func lsblk(argv []string) {
 
 // load module into engine
 func load(argv []string) {
-	println("load: " + argv[1])
+	if len(argv) != 2 {
+		println("usage: save <name>")
+		return
+	}
+
+	if running {
+		println("already running. halt first.")
+		return
+	}
+
+	println("loading", argv[1])
 
 	n, err := eng.FileStore.FileSize(argv[1])
 	if err != nil {
@@ -176,7 +188,7 @@ func load(argv []string) {
 		println(err.Error())
 		return
 	}
-	println("module loaded")
+	println("module loaded.")
 }
 
 // save into filestore
@@ -187,7 +199,7 @@ func save(argv []string) {
 	}
 
 	// read in size bytes from port
-	sz := convertToInt(argv[2])
+	sz := convert.StringToInt(argv[2])
 
 	data := make([]byte, sz)
 	if err := readDataFromPort(data); err != nil {
@@ -214,12 +226,17 @@ func readDataFromPort(data []byte) (err error) {
 
 // remove from filestore
 func rm(argv []string) {
-	println("rm: " + argv[1])
+	if len(argv) != 2 {
+		println("usage: rm <name>")
+		return
+	}
 
 	if err := eng.FileStore.Remove(argv[1]); err != nil {
 		println("error removing file:", err.Error())
 		return
 	}
+
+	println(argv[1], "deleted.")
 }
 
 var (
@@ -229,11 +246,9 @@ var (
 
 func run(argv []string) {
 	if running {
-		println("already running. halt first.")
+		println("module already running. run 'halt' first.")
 		return
 	}
-
-	println("starting...")
 
 	// run the module
 	var err error
@@ -244,23 +259,26 @@ func run(argv []string) {
 	}
 
 	running = true
-	println("running.")
+	println("module running.")
 }
 
 func halt(argv []string) {
 	if !running {
-		println("not running")
+		println("module not running")
 		return
 	}
 
 	println("halting...")
+	eng.Interpreter.Halt()
+	instance = nil
 	running = false
-	println("halted..")
+	runtime.GC()
+	println("module halted.")
 }
 
 func ping(argv []string) {
 	if !running {
-		println("not running. use 'run' first.")
+		println("module not running. use 'run' first.")
 		return
 	}
 
@@ -268,7 +286,7 @@ func ping(argv []string) {
 		println("usage: ping <count>")
 		return
 	}
-	count := convertToInt(argv[1])
+	count := convert.StringToInt(argv[1])
 
 	for i := 0; i < count; i++ {
 		println("Ping...")
@@ -281,36 +299,13 @@ func ping(argv []string) {
 
 func hello(argv []string) {
 	if !running {
-		println("not running. use 'run' first.")
+		println("module not running. use 'run' first.")
 		return
 	}
 
-	// ptr, sz := convert.StringToWasmPtr("hello from tinywasm")
-	// _, err := instance.Call("hello", ptr, sz)
-	// if err != nil {
-	// 	println(err.Error())
-	// 	return
-	// }
 	_, err := instance.Call("hello")
 	if err != nil {
 		println(err.Error())
 		return
 	}
-	// v := rtn.([]uint64)
-	// if len(v) != 2 {
-	// 	println("unexpected return value", len(v))
-	// 	return
-	// }
-
-	// println("hello returned:", convert.WasmPtrToString(uint32(v[0]), uint32(v[1])))
-}
-
-func convertToInt(s string) int {
-	result := 0
-
-	for i := 0; i < len(s); i++ {
-		result = result*10 + (int(s[i]) - 48)
-	}
-
-	return result
 }

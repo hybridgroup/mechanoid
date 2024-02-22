@@ -2,7 +2,7 @@
 
 package main
 
-import "github.com/hybridgroup/tinywasm/filestore/filesystem"
+import "github.com/hybridgroup/mechanoid/filestore/filesystem"
 
 var (
 	console = UART{}

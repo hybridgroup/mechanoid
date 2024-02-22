@@ -5,7 +5,7 @@ import (
 	"github.com/aykevl/tinygl"
 	"github.com/aykevl/tinygl/style"
 	"github.com/aykevl/tinygl/style/basic"
-	"github.com/hybridgroup/tinywasm/convert"
+	"github.com/hybridgroup/mechanoid/convert"
 	"tinygo.org/x/drivers/pixel"
 )
 
