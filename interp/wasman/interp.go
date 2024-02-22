@@ -70,6 +70,7 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 }
 
 func (i *Interpreter) Halt() error {
+	i.instance = nil
 	return nil
 }
 
