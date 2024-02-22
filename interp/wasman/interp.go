@@ -97,6 +97,11 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) err
 			return err
 		}
 		return nil
+	case func(int32, int32):
+		if err := wasmaneng.DefineFunc20(i.linker, moduleName, funcName, f.(func(int32, int32))); err != nil {
+			return err
+		}
+		return nil
 	case func(int32, int32) int32:
 		if err := wasmaneng.DefineFunc21(i.linker, moduleName, funcName, f.(func(uint32, uint32) uint32)); err != nil {
 			return err
@@ -114,6 +119,11 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) err
 		return nil
 	case func(uint32) uint32:
 		if err := wasmaneng.DefineFunc11(i.linker, moduleName, funcName, f.(func(uint32) uint32)); err != nil {
+			return err
+		}
+		return nil
+	case func(uint32, uint32):
+		if err := wasmaneng.DefineFunc20(i.linker, moduleName, funcName, f.(func(uint32, uint32))); err != nil {
 			return err
 		}
 		return nil

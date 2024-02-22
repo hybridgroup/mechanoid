@@ -3,6 +3,7 @@ package engine
 import "errors"
 
 var (
+	ErrInvalidEngine     = errors.New("engine: invalid engine")
 	ErrNoInterpreter     = errors.New("engine: no interpreter")
 	ErrInvalidFuncType   = errors.New("engine: invalid function type")
 	ErrMemoryNotDefined  = errors.New("engine: memory not defined")
@@ -28,6 +29,10 @@ func (e *Engine) UseInterpreter(interp Interpreter) {
 
 func (e *Engine) UseFileStore(fs FileStore) {
 	e.FileStore = fs
+}
+
+func (e *Engine) AddDevice(d Device) {
+	e.Devices = append(e.Devices, d)
 }
 
 func (e *Engine) Init() error {
