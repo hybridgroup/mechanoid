@@ -1,9 +1,16 @@
-# TinyWASM
+# Mechanoid
 
-TinyWASM is a WebAssembly runtime environment for embedded microcontrollers written using TinyGo.
-
+Mechanoid is a framework for developing applications using WebAssembly for embedded microcontrollers written using TinyGo.
 
 ## How to use
+
+```
+mecha new simple
+...
+
+(generates new application skeleton)
+
+```
 
 ### Simple
 
@@ -16,15 +23,15 @@ import (
 	_ "embed"
 	"time"
 
-	"github.com/hybridgroup/tinywasm/engine"
-	"github.com/hybridgroup/tinywasm/interp/wasman"
+	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/hybridgroup/mechanoid/interp/wasman"
 )
 
 //go:embed ping.wasm
 var pingModule []byte
 
 func main() {
-	println("TinyWASM engine starting...")
+	println("Mechanoid engine starting...")
 	eng := engine.NewEngine()
 
 	println("Using interpreter...")
@@ -72,7 +79,7 @@ $ tinygo flash -size short -target pybadge -monitor ./examples/simple
    code    data     bss |   flash     ram
  101012    1736   72216 |  102748   73952
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
-TinyWASM engine starting...
+Mechanoid engine starting...
 Using interpreter...
 Initializing engine...
 Initializing interpreter...
@@ -142,7 +149,7 @@ flowchart TD
 
 #### Application
 
-The host application that the developer who uses TinyWASM is creating.
+The host application that the developer who uses Mechanoid is creating.
 
 #### Modules
 
