@@ -1,4 +1,4 @@
-# Mechanoid
+![Mechanoid logo](https://mechanoid.io/images/logo-black.png)
 
 Mechanoid is a framework for developing applications using WebAssembly for embedded microcontrollers written using TinyGo.
 
