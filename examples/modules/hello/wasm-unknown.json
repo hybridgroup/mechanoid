@@ -19,7 +19,6 @@
 		"--stack-first",
 		"--no-demangle",
 		"--no-entry",
-		"--import-memory",
 		"--initial-memory=65536",
 		"--max-memory=65536",
 		"-zstack-size=4096"
