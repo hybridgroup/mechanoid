@@ -2,19 +2,37 @@
 
 Mechanoid is a framework for developing applications using WebAssembly for embedded microcontrollers written using TinyGo.
 
-## How to use
+## Simple
+
+### WebAssembly guest program
+
+```go
+//go:build tinygo
+
+package main
+
+//go:wasmimport hosted pong
+func pong()
+
+//go:export ping
+func ping() {
+	pong()
+}
+
+func main() {}
+```
+
+Compile this program to WASM using TinyGo:
 
 ```
-mecha new simple
-...
-
-(generates new application skeleton)
-
+$ tinygo build -size short -o ./modules/ping/ping.wasm -target ./modules/ping/wasm-unknown.json -no-debug ./modules/ping
+   code    data     bss |   flash     ram
+      9       0       0 |       9       0
 ```
 
-### Simple
+### Mechanoid host application
 
-Loads an embedded WASM module and then runs it by calling the exported `Ping()` function:
+The Mechanoid host application that runs on the hardware, loads this WASM module and then runs it by calling the exported `Ping()` function:
 
 ```go
 package main
@@ -105,72 +123,34 @@ pong
 More examples are available here:
 https://github.com/hybridgroup/mechanoid-examples
 
-## Architecture
+## Getting started
 
-```mermaid
-flowchart TD
-    subgraph Application
-        App
-    end
-    App-->Engine
-    subgraph Modules
-        WASM1
-        WASM2
-    end
-    subgraph Engine
-        FileStore
-        Interpreter
-        Devices
-    end
-    FileStore-->Modules
-    Interpreter-->Modules
-    Interpreter-->Devices
-    Devices--->Machine
-    Devices--->Hardware
-    Devices--->Network
-    subgraph Hardware
-        Sensor
-        Displayer
-        LEDSetter
-    end
-    subgraph Network
-        Net
-        Bluetooth
-    end
-    subgraph Machine
-        GPIO
-        ADC
-        I2C
-        SPI
-    end
-    Displayer-->SPI
-    Sensor-->GPIO
-    Sensor-->I2C
+- Install the Mechanoid command line tool
+- Create a new project
+- Make something amazing!
+
+## `mecha` command line tool
+
+```
+NAME:
+   mecha - Mechanoid WASM embedded development tools
+
+USAGE:
+   mecha [global options] command [command options] 
+
+COMMANDS:
+   new      create a new Mechanoid project
+   flash    flash a Mechanoid project to a device
+   test     run tests for a Mechanoid project
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h  show help
 ```
 
-#### Application
+## How it works
 
-The host application that the developer who uses Mechanoid is creating.
-
-#### Modules
-
-The WASM modules that developers who are creating code for this Application are writing.
-
-#### Engine
-
-The capabilities that the Application uses/exposes for Modules.
-
-#### Devices
-
-Wrappers around specific devices such as displays or sensors that can be used by the Application and/or Modules.
-
-#### Network
-
-Wrappers around specific networking capabilities such as WiFi or Bluetooth that can be used by the Application and/or Modules.
-
-#### Machine
-
-Wrappers around low-level hardware interfaces such as GPIO or I2C that can be used by the Application and/or Modules.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 
 ## Goals
 
