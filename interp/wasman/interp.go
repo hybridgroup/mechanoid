@@ -8,12 +8,11 @@ import (
 	"github.com/c0mm4nd/wasman/wasm"
 )
 
-var heapMemory = make([]byte, 65536)
-
 type Interpreter struct {
 	linker   *wasmaneng.Linker
 	module   *wasmaneng.Module
 	instance *wasmaneng.Instance
+	Memory   []byte
 }
 
 func (i *Interpreter) Name() string {
@@ -23,8 +22,15 @@ func (i *Interpreter) Name() string {
 func (i *Interpreter) Init() error {
 	i.linker = wasmaneng.NewLinker(config.LinkerConfig{})
 
-	if err := i.linker.DefineMemory("env", "memory", heapMemory); err != nil {
-		return err
+	// use host pre-allocated memory for instances
+	if i.Memory != nil {
+		if len(i.Memory)%65536 != 0 {
+			return engine.ErrInvalidMemorySize
+		}
+
+		if err := i.linker.DefineMemory("env", "memory", i.Memory); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -125,5 +131,12 @@ func (i *Interpreter) Log(msg string) {
 }
 
 func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
+	if i.instance.Memory == nil {
+		return nil, engine.ErrMemoryNotDefined
+	}
+	if ptr+sz > uint32(len(i.instance.Memory.Value)) {
+		return nil, engine.ErrMemoryOutOfBounds
+	}
+
 	return i.instance.Memory.Value[ptr : ptr+sz], nil
 }

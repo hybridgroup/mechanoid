@@ -3,8 +3,11 @@ package engine
 import "errors"
 
 var (
-	errNoInterpreter   = errors.New("engine: no interpreter")
-	ErrInvalidFuncType = errors.New("engine: invalid function type")
+	ErrNoInterpreter     = errors.New("engine: no interpreter")
+	ErrInvalidFuncType   = errors.New("engine: invalid function type")
+	ErrMemoryNotDefined  = errors.New("engine: memory not defined")
+	ErrMemoryOutOfBounds = errors.New("engine: memory out of bounds")
+	ErrInvalidMemorySize = errors.New("engine: invalid memory size")
 )
 
 type Engine struct {
@@ -29,7 +32,7 @@ func (e *Engine) UseFileStore(fs FileStore) {
 
 func (e *Engine) Init() error {
 	if e.Interpreter == nil {
-		return errNoInterpreter
+		return ErrNoInterpreter
 	}
 
 	println("Initializing interpreter...")
