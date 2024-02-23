@@ -11,7 +11,17 @@ Mechanoid includes a command line interface tool that helps you create, test, an
 ## Getting started
 
 - Install the Mechanoid command line tool
+
+    ```
+    go install github.com/hybridgroup/mechanoid/cmd/mecha@latest
+    ```
+
 - Create a new project
+
+    ```
+    mecha new example.com/myproject
+    ```
+
 - Make something amazing!
 
 ## Example
@@ -62,7 +72,7 @@ func main() {}
 Compile this program to WASM using TinyGo:
 
 ```
-$ tinygo build -size short -o ./modules/ping/ping.wasm -target ./modules/ping/wasm-unknown.json -no-debug ./modules/ping
+$ tinygo build -size short -o ping.wasm -target ./modules/ping/ping.json -no-debug ./modules/ping
    code    data     bss |   flash     ram
       9       0       0 |       9       0
 ```
@@ -130,7 +140,7 @@ func pongFunc() {
 You can compile and flash the WASM runtime engine and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
 
 ```
-$ tinygo flash -size short -target pybadge -monitor ./examples/simple
+$ mecha flash -m pybadge
    code    data     bss |   flash     ram
  101012    1736   72216 |  102748   73952
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
