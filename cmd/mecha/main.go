@@ -5,13 +5,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/hybridgroup/mechanoid"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	app := &cli.App{
-		Name:  "mecha",
-		Usage: "Mechanoid WASM embedded development tools",
+		Name:    "mecha",
+		Usage:   "Mechanoid CLI",
+		Version: mechanoid.Version(),
 		Commands: []*cli.Command{
 			{
 				Name:   "new",
