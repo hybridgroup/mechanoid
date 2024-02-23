@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"log"
@@ -33,6 +34,9 @@ func main() {
 				Name:   "flash",
 				Usage:  "flash a Mechanoid project to a device",
 				Action: flashProject,
+				Flags: []cli.Flag{
+					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
+				},
 			},
 			{
 				Name:   "test",
@@ -77,7 +81,52 @@ func buildProject(cCtx *cli.Context) error {
 }
 
 func flashProject(cCtx *cli.Context) error {
-	fmt.Println("flash: ", cCtx.Args().First())
+	if cCtx.Args().Len() < 1 {
+		return fmt.Errorf("target board required")
+	}
+
+	if cCtx.Bool("monitor") {
+		return flashProjectAndMonitor(cCtx)
+	}
+
+	targetName := cCtx.Args().First()
+
+	var stdout, stderr bytes.Buffer
+	cmd := exec.Command("tinygo", "flash", "-size", "short", "-target", targetName, ".")
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("tinygo flash -size short -target %s .: %v\n%s%s", targetName, err, stderr.Bytes(), stdout.Bytes())
+	}
+
+	fmt.Println(stdout.String())
+
+	return nil
+}
+
+func flashProjectAndMonitor(cCtx *cli.Context) error {
+	targetName := cCtx.Args().First()
+
+	var stderr bytes.Buffer
+	cmd := exec.Command("tinygo", "flash", "-size", "short", "-target", targetName, "-monitor", ".")
+	cmd.Stderr = &stderr
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if err := cmd.Start(); err != nil {
+		log.Fatalf("tinygo flash -size short -target %s .: %v\n%s", targetName, err, stderr.Bytes())
+		return err
+	}
+
+	// print the monitoring output
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		m := scanner.Text()
+		fmt.Println(m)
+	}
+
 	return nil
 }
 
