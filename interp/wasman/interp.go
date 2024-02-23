@@ -39,7 +39,7 @@ func (i *Interpreter) Init() error {
 func (i *Interpreter) Load(code []byte) error {
 	conf := config.ModuleConfig{
 		Recover: true,
-		Logger:  i.Log,
+		Logger:  i.log,
 	}
 
 	var err error
@@ -75,69 +75,38 @@ func (i *Interpreter) Halt() error {
 }
 
 // TODO: better implementation using generics?
-func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) error {
-	switch f.(type) {
+func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
+	var err error
+	switch tf := f.(type) {
 	case func():
-		if err := wasmaneng.DefineFunc(i.linker, moduleName, funcName, f.(func())); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc(i.linker, moduleName, funcName, tf)
 	case func() int32:
-		if err := wasmaneng.DefineFunc01(i.linker, moduleName, funcName, f.(func() int32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc01(i.linker, moduleName, funcName, tf)
 	case func(int32):
-		if err := wasmaneng.DefineFunc10(i.linker, moduleName, funcName, f.(func(int32))); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc10(i.linker, moduleName, funcName, tf)
 	case func(int32) int32:
-		if err := wasmaneng.DefineFunc11(i.linker, moduleName, funcName, f.(func(int32) int32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc11(i.linker, moduleName, funcName, tf)
 	case func(int32, int32):
-		if err := wasmaneng.DefineFunc20(i.linker, moduleName, funcName, f.(func(int32, int32))); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc20(i.linker, moduleName, funcName, tf)
 	case func(int32, int32) int32:
-		if err := wasmaneng.DefineFunc21(i.linker, moduleName, funcName, f.(func(uint32, uint32) uint32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc21(i.linker, moduleName, funcName, tf)
 	case func() uint32:
-		if err := wasmaneng.DefineFunc01(i.linker, moduleName, funcName, f.(func() uint32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc01(i.linker, moduleName, funcName, tf)
 	case func(uint32):
-		if err := wasmaneng.DefineFunc10(i.linker, moduleName, funcName, f.(func(uint32))); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc10(i.linker, moduleName, funcName, tf)
 	case func(uint32) uint32:
-		if err := wasmaneng.DefineFunc11(i.linker, moduleName, funcName, f.(func(uint32) uint32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc11(i.linker, moduleName, funcName, tf)
 	case func(uint32, uint32):
-		if err := wasmaneng.DefineFunc20(i.linker, moduleName, funcName, f.(func(uint32, uint32))); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc20(i.linker, moduleName, funcName, tf)
 	case func(uint32, uint32) uint32:
-		if err := wasmaneng.DefineFunc21(i.linker, moduleName, funcName, f.(func(uint32, uint32) uint32)); err != nil {
-			return err
-		}
-		return nil
+		err = wasmaneng.DefineFunc21(i.linker, moduleName, funcName, tf)
 	default:
 		return engine.ErrInvalidFuncType
 	}
+	return err
 }
 
-func (i *Interpreter) Log(msg string) {
+func (i *Interpreter) log(msg string) {
 	println(msg)
 }
 
