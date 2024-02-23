@@ -1,7 +1,7 @@
 package wasman
 
 import (
-	wasmaneng "github.com/c0mm4nd/wasman"
+	wasmaneng "github.com/hybridgroup/wasman"
 )
 
 type Instance struct {
