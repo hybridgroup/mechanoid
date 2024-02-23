@@ -40,19 +40,19 @@ func (e *Engine) Init() error {
 		return ErrNoInterpreter
 	}
 
-	println("Initializing interpreter...")
+	// println("Initializing interpreter...")
 	if err := e.Interpreter.Init(); err != nil {
 		return err
 	}
 
 	if e.FileStore != nil {
-		println("Initializing file store...")
+		// println("Initializing file store...")
 		if err := e.FileStore.Init(); err != nil {
 			return err
 		}
 	}
 
-	println("Initializing devices...")
+	// println("Initializing devices...")
 	for _, d := range e.Devices {
 		if err := d.Init(); err != nil {
 			return err
