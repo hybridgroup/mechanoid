@@ -1,10 +1,47 @@
 ![Mechanoid logo](https://mechanoid.io/images/logo-black.png)
 
-Mechanoid is a framework for developing applications using WebAssembly for embedded microcontrollers written using TinyGo.
+Mechanoid is a framework for developing applications using WebAssembly on embedded microcontrollers written using TinyGo.
 
-## Simple
+## What is Mechanoid?
+
+Mechanoid is an open source framework for building and running applications on small embedded microcontrollers using WebAssembly. It is intended to make it easier to create applications that run on embedded devices that are secure and extendable, and takes advantage of all of the latest developments in both WebAssembly and embedded systems development.
+
+Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware, in part thanks to being written using [TinyGo](https://tinygo.org/).
+
+## Getting started
+
+- Install the Mechanoid command line tool
+- Create a new project
+- Make something amazing!
+
+## Example
+
+Here is an example of an application built using Mechanoid.
+
+It consists of a host application that runs on a microcontroller, and a separate WebAssembly module that will be run by the host application on that same microcontroller.
+
+The host application loads the WASM and then executes it, sending the output to the serial interface on the board. This way we can see the output on your computer.
+
+```mermaid
+flowchart LR
+    subgraph Computer
+    end
+    subgraph Microcontroller
+        subgraph Application
+            Pong
+        end
+        subgraph ping.wasm
+            Ping
+        end
+        Ping-->Pong
+        Application-->Ping
+    end
+    Application--Serial port-->Computer
+```
 
 ### WebAssembly guest program
+
+This is the Go code for the `ping.wasm` module. It exports a `ping` function, that calls a function `pong` that has been imported from the host application.
 
 ```go
 //go:build tinygo
@@ -32,7 +69,7 @@ $ tinygo build -size short -o ./modules/ping/ping.wasm -target ./modules/ping/wa
 
 ### Mechanoid host application
 
-The Mechanoid host application that runs on the hardware, loads this WASM module and then runs it by calling the exported `Ping()` function:
+This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the exported `Ping()` function:
 
 ```go
 package main
@@ -120,14 +157,9 @@ Calling ping...
 pong
 ```
 
-More examples are available here:
+There are more examples are available in our separate repo, located here:
 https://github.com/hybridgroup/mechanoid-examples
 
-## Getting started
-
-- Install the Mechanoid command line tool
-- Create a new project
-- Make something amazing!
 
 ## `mecha` command line tool
 
