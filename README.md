@@ -49,6 +49,14 @@ flowchart LR
     Application--Serial port-->Computer
 ```
 
+Here is how you create it using Mechanoid:
+
+```
+mecha new project -template=simple example.com/myproject
+cd myproject
+mecha new module -template=ping example.com/myproject/modules/ping
+```
+
 ### WebAssembly guest program
 
 This is the Go code for the `ping.wasm` module. It exports a `ping` function, that calls a function `pong` that has been imported from the host application.
@@ -69,12 +77,10 @@ func ping() {
 func main() {}
 ```
 
-Compile this program to WASM using TinyGo:
+Compile this program to WASM using Mechanoid:
 
 ```
-$ tinygo build -size short -o ping.wasm -target ./modules/ping/ping.json -no-debug ./modules/ping
-   code    data     bss |   flash     ram
-      9       0       0 |       9       0
+$ mecha build
 ```
 
 ### Mechanoid host application
@@ -167,7 +173,7 @@ Calling ping...
 pong
 ```
 
-There are more examples are available in our separate repo, located here:
+There are more examples available here:
 https://github.com/hybridgroup/mechanoid-examples
 
 ## How it works
