@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func flashProject(cCtx *cli.Context) error {
+func flash(cCtx *cli.Context) error {
 	if cCtx.Args().Len() < 1 {
 		return fmt.Errorf("target board required")
 	}

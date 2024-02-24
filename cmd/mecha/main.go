@@ -19,17 +19,17 @@ func main() {
 				Usage:     "create new Mechanoid project",
 				Args:      true,
 				ArgsUsage: "[project-name] <template>",
-				Action:    newProject,
+				Action:    create,
 			},
 			{
 				Name:   "build",
 				Usage:  "build Mechanoid project to binary file",
-				Action: buildProject,
+				Action: build,
 			},
 			{
 				Name:      "flash",
 				Usage:     "flash Mechanoid project to board",
-				Action:    flashProject,
+				Action:    flash,
 				ArgsUsage: "[board-name]",
 				Flags: []cli.Flag{
 					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
@@ -38,7 +38,7 @@ func main() {
 			{
 				Name:   "test",
 				Usage:  "run tests for Mechanoid project",
-				Action: testProject,
+				Action: test,
 			},
 		},
 	}
