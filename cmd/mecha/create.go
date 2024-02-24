@@ -6,63 +6,53 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
 
 const (
-	defaultProjectTemplate = "github.com/hybridgroup/mechanoid-examples/simple"
-	defaultModuleTemplate  = "github.com/hybridgroup/mechanoid-examples/modules/hello"
+	defaultProjectTemplate = "github.com/hybridgroup/mechanoid-templates/projects/simple"
+	defaultModuleTemplate  = "github.com/hybridgroup/mechanoid-templates/modules/hello"
 )
 
 func createProject(cCtx *cli.Context) error {
-	switch {
-	case cCtx.Args().Len() == 0:
+	if cCtx.Args().Len() < 1 {
 		return fmt.Errorf("name required")
-	case cCtx.Args().Len() == 1:
-		name := cCtx.Args().Get(0)
-
-		return createFromTemplate(defaultProjectTemplate, name)
-	case cCtx.Args().Len() == 2:
-		name := cCtx.Args().Get(0)
-		templateName := cCtx.Args().Get(1)
-
-		return createFromTemplate(templateName, name)
-	default:
-		return fmt.Errorf("invalid params: %v", cCtx.Args().Slice())
 	}
+	name := cCtx.Args().Get(0)
+	templateName := cCtx.String("template")
+	switch {
+	case templateName == "":
+		templateName = defaultProjectTemplate
+	case !strings.Contains(templateName, "/"):
+		templateName = "github.com/hybridgroup/mechanoid-templates/projects/" + templateName
+	}
+
+	return createFromTemplate(templateName, name)
 }
 
 func createModule(cCtx *cli.Context) error {
-	switch {
-	case cCtx.Args().Len() == 0:
+	if cCtx.Args().Len() < 1 {
 		return fmt.Errorf("name required")
-	case cCtx.Args().Len() == 1:
-		name := cCtx.Args().Get(0)
-
-		err := os.MkdirAll("modules", 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
-		os.Chdir("modules")
-		defer os.Chdir("..")
-
-		return createFromTemplate(defaultModuleTemplate, name)
-	case cCtx.Args().Len() == 2:
-		name := cCtx.Args().Get(0)
-		templateName := cCtx.Args().Get(1)
-
-		err := os.MkdirAll("modules", 0777)
-		if err != nil {
-			log.Fatal(err)
-		}
-		os.Chdir("modules")
-		defer os.Chdir("..")
-
-		return createFromTemplate(templateName, name)
-	default:
-		return fmt.Errorf("invalid params: %v", cCtx.Args().Slice())
 	}
+	name := cCtx.Args().Get(0)
+	templateName := cCtx.String("template")
+	switch {
+	case templateName == "":
+		templateName = defaultModuleTemplate
+	case !strings.Contains(templateName, "/"):
+		templateName = "github.com/hybridgroup/mechanoid-templates/modules/" + templateName
+	}
+
+	err := os.MkdirAll("modules", 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
+	os.Chdir("modules")
+	defer os.Chdir("..")
+
+	return createFromTemplate(defaultModuleTemplate, name)
 }
 
 func createFromTemplate(templ, proj string) error {

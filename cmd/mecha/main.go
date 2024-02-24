@@ -18,21 +18,24 @@ func main() {
 				Name:      "new",
 				Usage:     "create new Mechanoid project",
 				Args:      true,
-				ArgsUsage: "<name e.g. 'domain.com/projectname'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/simple']",
-				Action:    createProject,
+				ArgsUsage: "<name e.g. 'domain.com/projectname'>",
+				Flags: []cli.Flag{
+					&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for project creation"},
+				},
+				Action: createProject,
 				Subcommands: []*cli.Command{
 					{
 						Name:      "project",
 						Usage:     "create new Mechanoid project",
 						Args:      true,
-						ArgsUsage: "<name e.g. 'domain.com/projectname'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/simple']",
+						ArgsUsage: "<name e.g. 'domain.com/projectname'>",
 						Action:    createProject,
 					},
 					{
 						Name:      "module",
 						Usage:     "create new Mechanoid module",
 						Args:      true,
-						ArgsUsage: "<name e.g. 'domain.com/modulename'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/modules/hello']",
+						ArgsUsage: "<name e.g. 'domain.com/modulename'>",
 						Action:    createModule,
 					},
 				},
