@@ -16,7 +16,7 @@ func flash(cCtx *cli.Context) error {
 	}
 
 	if cCtx.Bool("monitor") {
-		return flashProjectAndMonitor(cCtx)
+		return flashAndMonitor(cCtx)
 	}
 
 	targetName := cCtx.Args().First()
@@ -34,7 +34,7 @@ func flash(cCtx *cli.Context) error {
 	return nil
 }
 
-func flashProjectAndMonitor(cCtx *cli.Context) error {
+func flashAndMonitor(cCtx *cli.Context) error {
 	targetName := cCtx.Args().First()
 
 	var stderr bytes.Buffer
