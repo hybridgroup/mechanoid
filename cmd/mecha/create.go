@@ -15,62 +15,53 @@ const (
 	defaultModuleTemplate  = "github.com/hybridgroup/mechanoid-examples/modules/hello"
 )
 
-// create a new project or module
-func create(cCtx *cli.Context) error {
+func createProject(cCtx *cli.Context) error {
 	switch {
 	case cCtx.Args().Len() == 0:
-		return fmt.Errorf("new project name required")
+		return fmt.Errorf("name required")
 	case cCtx.Args().Len() == 1:
 		name := cCtx.Args().Get(0)
-		templateName := defaultProjectTemplate
+
+		return createFromTemplate(defaultProjectTemplate, name)
+	case cCtx.Args().Len() == 2:
+		name := cCtx.Args().Get(0)
+		templateName := cCtx.Args().Get(1)
 
 		return createFromTemplate(templateName, name)
-	case cCtx.Args().Len() == 2:
-		switch cCtx.Args().Get(0) {
-		case "project":
-			name := cCtx.Args().Get(1)
-			templateName := defaultProjectTemplate
-
-			return createFromTemplate(templateName, name)
-		case "module":
-			name := cCtx.Args().Get(1)
-			templateName := defaultModuleTemplate
-
-			err := os.MkdirAll("modules", 0777)
-			if err != nil {
-				log.Fatal(err)
-			}
-			os.Chdir("modules")
-			defer os.Chdir("..")
-
-			return createFromTemplate(templateName, name)
-		default:
-			return fmt.Errorf("don't know how to create a new: %s", cCtx.Args().Get(0))
-		}
-	case cCtx.Args().Len() == 3:
-		switch cCtx.Args().Get(0) {
-		case "project":
-			name := cCtx.Args().Get(1)
-			templateName := cCtx.Args().Get(2)
-
-			return createFromTemplate(templateName, name)
-		case "module":
-			name := cCtx.Args().Get(1)
-			templateName := cCtx.Args().Get(2)
-
-			err := os.MkdirAll("modules", 0777)
-			if err != nil {
-				log.Fatal(err)
-			}
-			os.Chdir("modules")
-			defer os.Chdir("..")
-
-			return createFromTemplate(templateName, name)
-		default:
-			return fmt.Errorf("don't know how to create a new: %s", cCtx.Args().Get(0))
-		}
 	default:
-		return fmt.Errorf("don't know how to create a new: %v", cCtx.Args().Slice())
+		return fmt.Errorf("invalid params: %v", cCtx.Args().Slice())
+	}
+}
+
+func createModule(cCtx *cli.Context) error {
+	switch {
+	case cCtx.Args().Len() == 0:
+		return fmt.Errorf("name required")
+	case cCtx.Args().Len() == 1:
+		name := cCtx.Args().Get(0)
+
+		err := os.MkdirAll("modules", 0777)
+		if err != nil {
+			log.Fatal(err)
+		}
+		os.Chdir("modules")
+		defer os.Chdir("..")
+
+		return createFromTemplate(defaultModuleTemplate, name)
+	case cCtx.Args().Len() == 2:
+		name := cCtx.Args().Get(0)
+		templateName := cCtx.Args().Get(1)
+
+		err := os.MkdirAll("modules", 0777)
+		if err != nil {
+			log.Fatal(err)
+		}
+		os.Chdir("modules")
+		defer os.Chdir("..")
+
+		return createFromTemplate(templateName, name)
+	default:
+		return fmt.Errorf("invalid params: %v", cCtx.Args().Slice())
 	}
 }
 

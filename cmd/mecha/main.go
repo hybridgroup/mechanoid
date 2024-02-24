@@ -18,8 +18,24 @@ func main() {
 				Name:      "new",
 				Usage:     "create new Mechanoid project",
 				Args:      true,
-				ArgsUsage: "[project-name] <template>",
-				Action:    create,
+				ArgsUsage: "<name e.g. 'domain.com/projectname'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/simple']",
+				Action:    createProject,
+				Subcommands: []*cli.Command{
+					{
+						Name:      "project",
+						Usage:     "create new Mechanoid project",
+						Args:      true,
+						ArgsUsage: "<name e.g. 'domain.com/projectname'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/simple']",
+						Action:    createProject,
+					},
+					{
+						Name:      "module",
+						Usage:     "create new Mechanoid module",
+						Args:      true,
+						ArgsUsage: "<name e.g. 'domain.com/modulename'> [template path e.g. 'github.com/hybridgroup/mechanoid-examples/modules/hello']",
+						Action:    createModule,
+					},
+				},
 			},
 			{
 				Name:   "build",
@@ -30,7 +46,7 @@ func main() {
 				Name:      "flash",
 				Usage:     "flash Mechanoid project to board",
 				Action:    flash,
-				ArgsUsage: "[board-name]",
+				ArgsUsage: "<board-name>",
 				Flags: []cli.Flag{
 					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
 				},
