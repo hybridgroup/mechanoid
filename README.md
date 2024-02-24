@@ -10,7 +10,7 @@ Mechanoid includes a command line interface tool that helps you create, test, an
 
 ## Getting started
 
-- Install the Mechanoid command line tool
+- Install the [Mechanoid command line tool](./cmd/mecha/README.md)
 
     ```
     go install github.com/hybridgroup/mechanoid/cmd/mecha@latest
@@ -169,26 +169,6 @@ pong
 
 There are more examples are available in our separate repo, located here:
 https://github.com/hybridgroup/mechanoid-examples
-
-
-## `mecha` command line tool
-
-```
-NAME:
-   mecha - Mechanoid WASM embedded development tools
-
-USAGE:
-   mecha [global options] command [command options] 
-
-COMMANDS:
-   new      create a new Mechanoid project
-   flash    flash a Mechanoid project to a device
-   test     run tests for a Mechanoid project
-   help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h  show help
-```
 
 ## How it works
 
