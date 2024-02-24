@@ -52,7 +52,7 @@ func createModule(cCtx *cli.Context) error {
 	os.Chdir("modules")
 	defer os.Chdir("..")
 
-	return createFromTemplate(defaultModuleTemplate, name)
+	return createFromTemplate(templateName, name)
 }
 
 func createFromTemplate(templ, proj string) error {

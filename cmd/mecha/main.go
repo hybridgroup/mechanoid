@@ -8,6 +8,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var templateFlags = []cli.Flag{
+	&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for module creation"},
+}
+
 func main() {
 	app := &cli.App{
 		Name:    "mecha",
@@ -17,25 +21,22 @@ func main() {
 			{
 				Name:      "new",
 				Usage:     "create new Mechanoid project",
-				Args:      true,
 				ArgsUsage: "<name e.g. 'domain.com/projectname'>",
-				Flags: []cli.Flag{
-					&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for project creation"},
-				},
-				Action: createProject,
+				Action:    createProject,
+				Flags:     templateFlags,
 				Subcommands: []*cli.Command{
 					{
 						Name:      "project",
 						Usage:     "create new Mechanoid project",
-						Args:      true,
 						ArgsUsage: "<name e.g. 'domain.com/projectname'>",
+						Flags:     templateFlags,
 						Action:    createProject,
 					},
 					{
 						Name:      "module",
 						Usage:     "create new Mechanoid module",
-						Args:      true,
 						ArgsUsage: "<name e.g. 'domain.com/modulename'>",
+						Flags:     templateFlags,
 						Action:    createModule,
 					},
 				},
