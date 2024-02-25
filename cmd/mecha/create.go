@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/urfave/cli/v2"
@@ -37,6 +38,7 @@ func createModule(cCtx *cli.Context) error {
 		return fmt.Errorf("name required")
 	}
 	name := cCtx.Args().Get(0)
+	basename := filepath.Base(name)
 	templateName := cCtx.String("template")
 	switch {
 	case templateName == "":
@@ -52,7 +54,17 @@ func createModule(cCtx *cli.Context) error {
 	os.Chdir("modules")
 	defer os.Chdir("..")
 
-	return createFromTemplate(templateName, name)
+	if err := createFromTemplate(templateName, name); err != nil {
+		return err
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return os.Rename(filepath.Join(wd, basename, filepath.Base(templateName)+".json"),
+		filepath.Join(wd, basename, basename+".json"))
 }
 
 func createFromTemplate(templ, proj string) error {
