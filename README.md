@@ -1,10 +1,10 @@
 ![Mechanoid logo](https://mechanoid.io/images/logo-blue.png)
 
-Mechanoid is a framework for developing applications using WebAssembly on embedded microcontrollers written using TinyGo.
+Mechanoid is an application framework for WebAssembly on embedded systems using TinyGo.
 
 ## What is Mechanoid?
 
-Mechanoid is an open source framework for building and running applications on small embedded microcontrollers using WebAssembly. It is intended to make it easier to create applications that run on embedded devices that are secure and extendable, and takes advantage of all of the latest developments in both WebAssembly and embedded systems development.
+Mechanoid is an open source framework for building and running applications on small embedded systems using WebAssembly. It is intended to make it easier to create applications that run on embedded devices that are secure and extendable, and takes advantage of all of the latest developments in both WebAssembly and embedded development.
 
 Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware, in part thanks to being written using [TinyGo](https://tinygo.org/).
 
