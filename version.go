@@ -1,7 +1,7 @@
 package mechanoid
 
 var (
-	version = "0.0.1"
+	version = "0.0.1-dev"
 	sha     string
 )
 
