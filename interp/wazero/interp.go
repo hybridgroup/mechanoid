@@ -11,6 +11,7 @@ import (
 
 type Interpreter struct {
 	runtime wazero.Runtime
+	defs    map[string]map[string]any
 	module  api.Module
 }
 
@@ -24,9 +25,31 @@ func (i *Interpreter) Init() error {
 	return nil
 }
 
+func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
+	if i.defs == nil {
+		i.defs = make(map[string]map[string]any)
+	}
+	if _, exists := i.defs[moduleName]; !exists {
+		i.defs[moduleName] = make(map[string]any)
+	}
+	i.defs[moduleName][funcName] = f
+	return nil
+}
+
 func (i *Interpreter) Load(code []byte) error {
-	ctx := context.Background()
 	var err error
+	ctx := context.Background()
+	for moduleName, funcs := range i.defs {
+		b := i.runtime.NewHostModuleBuilder(moduleName)
+		for funcName, f := range funcs {
+			b = b.NewFunctionBuilder().WithFunc(f).Export(funcName)
+		}
+		_, err = b.Instantiate(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
 	i.module, err = i.runtime.Instantiate(ctx, code)
 	return err
 }
@@ -48,15 +71,6 @@ func (i *Interpreter) Halt() error {
 	ctx := context.Background()
 	err := i.runtime.Close(ctx)
 	i.runtime = nil
-	return err
-}
-
-func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
-	b := i.runtime.NewHostModuleBuilder(moduleName)
-	b = b.NewFunctionBuilder().WithFunc(f).Export(funcName)
-	var err error
-	ctx := context.Background()
-	_, err = b.Instantiate(ctx)
 	return err
 }
 
