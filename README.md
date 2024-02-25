@@ -1,10 +1,65 @@
-![Mechanoid logo](https://mechanoid.io/images/logo-black.png)
+![Mechanoid logo](https://mechanoid.io/images/logo-blue.png)
 
-Mechanoid is a framework for developing applications using WebAssembly for embedded microcontrollers written using TinyGo.
+Mechanoid is a framework for developing applications using WebAssembly on embedded microcontrollers written using TinyGo.
 
-## Simple
+## What is Mechanoid?
+
+Mechanoid is an open source framework for building and running applications on small embedded microcontrollers using WebAssembly. It is intended to make it easier to create applications that run on embedded devices that are secure and extendable, and takes advantage of all of the latest developments in both WebAssembly and embedded systems development.
+
+Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware, in part thanks to being written using [TinyGo](https://tinygo.org/).
+
+## Getting started
+
+- Install the [Mechanoid command line tool](./cmd/mecha/README.md)
+
+    ```
+    go install github.com/hybridgroup/mechanoid/cmd/mecha@latest
+    ```
+
+- Create a new project
+
+    ```
+    mecha new example.com/myproject
+    ```
+
+- Make something amazing!
+
+## Example
+
+Here is an example of an application built using Mechanoid.
+
+It consists of a host application that runs on a microcontroller, and a separate WebAssembly module that will be run by the host application on that same microcontroller.
+
+The host application loads the WASM and then executes it, sending the output to the serial interface on the board. This way we can see the output on your computer.
+
+```mermaid
+flowchart LR
+    subgraph Computer
+    end
+    subgraph Microcontroller
+        subgraph Application
+            Pong
+        end
+        subgraph ping.wasm
+            Ping
+        end
+        Ping-->Pong
+        Application-->Ping
+    end
+    Application--Serial port-->Computer
+```
+
+Here is how you create it using Mechanoid:
+
+```
+mecha new project -template=simple example.com/myproject
+cd myproject
+mecha new module -template=ping example.com/myproject/modules/ping
+```
 
 ### WebAssembly guest program
+
+This is the Go code for the `ping.wasm` module. It exports a `ping` function, that calls a function `pong` that has been imported from the host application.
 
 ```go
 //go:build tinygo
@@ -22,17 +77,15 @@ func ping() {
 func main() {}
 ```
 
-Compile this program to WASM using TinyGo:
+Compile this program to WASM using Mechanoid:
 
 ```
-$ tinygo build -size short -o ./modules/ping/ping.wasm -target ./modules/ping/wasm-unknown.json -no-debug ./modules/ping
-   code    data     bss |   flash     ram
-      9       0       0 |       9       0
+$ mecha build
 ```
 
 ### Mechanoid host application
 
-The Mechanoid host application that runs on the hardware, loads this WASM module and then runs it by calling the exported `Ping()` function:
+This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the exported `Ping()` function:
 
 ```go
 package main
@@ -93,7 +146,7 @@ func pongFunc() {
 You can compile and flash the WASM runtime engine and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
 
 ```
-$ tinygo flash -size short -target pybadge -monitor ./examples/simple
+$ mecha flash -m pybadge
    code    data     bss |   flash     ram
  101012    1736   72216 |  102748   73952
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
@@ -120,33 +173,8 @@ Calling ping...
 pong
 ```
 
-More examples are available here:
+There are more examples available here:
 https://github.com/hybridgroup/mechanoid-examples
-
-## Getting started
-
-- Install the Mechanoid command line tool
-- Create a new project
-- Make something amazing!
-
-## `mecha` command line tool
-
-```
-NAME:
-   mecha - Mechanoid WASM embedded development tools
-
-USAGE:
-   mecha [global options] command [command options] 
-
-COMMANDS:
-   new      create a new Mechanoid project
-   flash    flash a Mechanoid project to a device
-   test     run tests for a Mechanoid project
-   help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h  show help
-```
 
 ## How it works
 

@@ -3,9 +3,9 @@ package wasman
 import (
 	"github.com/hybridgroup/mechanoid/engine"
 
-	wasmaneng "github.com/c0mm4nd/wasman"
-	"github.com/c0mm4nd/wasman/config"
-	"github.com/c0mm4nd/wasman/wasm"
+	wasmaneng "github.com/hybridgroup/wasman"
+	"github.com/hybridgroup/wasman/config"
+	"github.com/hybridgroup/wasman/wasm"
 )
 
 type Interpreter struct {
