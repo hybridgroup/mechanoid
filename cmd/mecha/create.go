@@ -39,6 +39,13 @@ func createModule(cCtx *cli.Context) error {
 	}
 	name := cCtx.Args().Get(0)
 	basename := filepath.Base(name)
+	if name == basename {
+		mod, err := getModuleName()
+		if err != nil {
+			return err
+		}
+		name = mod + "/modules/" + name
+	}
 	templateName := cCtx.String("template")
 	switch {
 	case templateName == "":
@@ -77,4 +84,16 @@ func createFromTemplate(templ, proj string) error {
 	}
 
 	return nil
+}
+
+func getModuleName() (string, error) {
+	var stdout, stderr bytes.Buffer
+	cmd := exec.Command("go", "list", "-f", "{{.ImportPath}}")
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("go list -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
+	}
+
+	return strings.TrimSuffix(stdout.String(), "\n"), nil
 }
