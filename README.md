@@ -54,7 +54,7 @@ Here is how you create it using Mechanoid:
 ```
 mecha new project -template=simple example.com/myproject
 cd myproject
-mecha new module -template=ping example.com/myproject/modules/ping
+mecha new module -template=ping ping
 ```
 
 ### WebAssembly guest program
