@@ -13,8 +13,6 @@ type Interpreter interface {
 	Halt() error
 	// DefineFunc defines a function in the host module.
 	DefineFunc(module, name string, f interface{}) error
-	// Log logs a message.
-	Log(msg string)
 	// MemoryData returns a slice of memory data from the memory managed by the host.
 	MemoryData(ptr, sz uint32) ([]byte, error)
 }
