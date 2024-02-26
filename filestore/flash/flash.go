@@ -8,6 +8,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
 	"tinygo.org/x/tinyfs"
 	"tinygo.org/x/tinyfs/littlefs"
@@ -57,15 +58,15 @@ func (fs *FileStore) Init() error {
 	fs.lfs = lfs
 
 	// Mount the filesystem
-	println("Mounting filesystem...")
+	mechanoid.Log("Mounting filesystem...")
 	if err := fs.lfs.Mount(); err != nil {
 		// if the filesystem cannot be mounted, try to format it
-		println("Formatting new filesystem...")
+		mechanoid.Log("Formatting new filesystem...")
 		if err := fs.lfs.Format(); err != nil {
 			return err
 		}
 
-		println("Mounting new filesystem...")
+		mechanoid.Log("Mounting new filesystem...")
 		// if the format was successful, try to mount again
 		if err := fs.lfs.Mount(); err != nil {
 			return err

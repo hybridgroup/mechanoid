@@ -63,13 +63,13 @@ mecha new project -t=blink example.com/myproject
 ## New module
 
 ```
-mecha new module example.com/myproject/modules/mymodule
+mecha new module mymodule
 
 ```
 
 ## New module based on template
 
 ```
-mecha new module -t=blink example.com/myproject/modules/mymodule
+mecha new module -t=blink mymodule
 
 ```

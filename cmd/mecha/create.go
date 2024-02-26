@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/urfave/cli/v2"
@@ -37,6 +38,14 @@ func createModule(cCtx *cli.Context) error {
 		return fmt.Errorf("name required")
 	}
 	name := cCtx.Args().Get(0)
+	basename := filepath.Base(name)
+	if name == basename {
+		mod, err := getModuleName()
+		if err != nil {
+			return err
+		}
+		name = mod + "/modules/" + name
+	}
 	templateName := cCtx.String("template")
 	switch {
 	case templateName == "":
@@ -52,7 +61,17 @@ func createModule(cCtx *cli.Context) error {
 	os.Chdir("modules")
 	defer os.Chdir("..")
 
-	return createFromTemplate(templateName, name)
+	if err := createFromTemplate(templateName, name); err != nil {
+		return err
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return os.Rename(filepath.Join(wd, basename, filepath.Base(templateName)+".json"),
+		filepath.Join(wd, basename, basename+".json"))
 }
 
 func createFromTemplate(templ, proj string) error {
@@ -65,4 +84,16 @@ func createFromTemplate(templ, proj string) error {
 	}
 
 	return nil
+}
+
+func getModuleName() (string, error) {
+	var stdout, stderr bytes.Buffer
+	cmd := exec.Command("go", "list", "-f", "{{.ImportPath}}")
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("go list -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
+	}
+
+	return strings.TrimSuffix(stdout.String(), "\n"), nil
 }
