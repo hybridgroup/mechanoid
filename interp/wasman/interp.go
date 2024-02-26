@@ -1,6 +1,7 @@
 package wasman
 
 import (
+	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
 
 	wasmaneng "github.com/hybridgroup/wasman"
@@ -39,7 +40,7 @@ func (i *Interpreter) Init() error {
 func (i *Interpreter) Load(code []byte) error {
 	conf := config.ModuleConfig{
 		Recover: true,
-		Logger:  i.Log,
+		Logger:  mechanoid.Log,
 	}
 
 	var err error
@@ -135,10 +136,6 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f interface{}) err
 	default:
 		return engine.ErrInvalidFuncType
 	}
-}
-
-func (i *Interpreter) Log(msg string) {
-	println(msg)
 }
 
 func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {

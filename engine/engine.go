@@ -1,6 +1,10 @@
 package engine
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/hybridgroup/mechanoid"
+)
 
 var (
 	ErrInvalidEngine     = errors.New("engine: invalid engine")
@@ -40,19 +44,19 @@ func (e *Engine) Init() error {
 		return ErrNoInterpreter
 	}
 
-	println("Initializing interpreter...")
+	mechanoid.Log("Initializing interpreter...")
 	if err := e.Interpreter.Init(); err != nil {
 		return err
 	}
 
 	if e.FileStore != nil {
-		println("Initializing file store...")
+		mechanoid.Log("Initializing file store...")
 		if err := e.FileStore.Init(); err != nil {
 			return err
 		}
 	}
 
-	println("Initializing devices...")
+	mechanoid.Log("Initializing devices...")
 	for _, d := range e.Devices {
 		if err := d.Init(); err != nil {
 			return err
