@@ -3,6 +3,7 @@ package wazero
 import (
 	"context"
 	"errors"
+	"io"
 
 	"github.com/hybridgroup/mechanoid/engine"
 	"github.com/tetratelabs/wazero"
@@ -21,7 +22,10 @@ func (i *Interpreter) Name() string {
 
 func (i *Interpreter) Init() error {
 	ctx := context.Background()
-	i.runtime = wazero.NewRuntimeWithConfig(ctx, wazero.NewRuntimeConfigInterpreter())
+	conf := wazero.NewRuntimeConfigInterpreter()
+	conf = conf.WithDebugInfoEnabled(false)
+	conf = conf.WithMemoryLimitPages(1)
+	i.runtime = wazero.NewRuntimeWithConfig(ctx, conf)
 	return nil
 }
 
@@ -39,18 +43,23 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
 func (i *Interpreter) Load(code []byte) error {
 	var err error
 	ctx := context.Background()
+	conf := wazero.NewModuleConfig()
+	conf = conf.WithRandSource(cheapRand{})
 	for moduleName, funcs := range i.defs {
 		b := i.runtime.NewHostModuleBuilder(moduleName)
 		for funcName, f := range funcs {
 			b = b.NewFunctionBuilder().WithFunc(f).Export(funcName)
 		}
-		_, err = b.Instantiate(ctx)
+		compiled, err := b.Compile(ctx)
+		if err != nil {
+			return err
+		}
+		_, err = i.runtime.InstantiateModule(ctx, compiled, conf)
 		if err != nil {
 			return err
 		}
 	}
-
-	i.module, err = i.runtime.Instantiate(ctx, code)
+	i.module, err = i.runtime.InstantiateWithConfig(ctx, code, conf)
 	return err
 }
 
@@ -84,4 +93,15 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 		return nil, errors.New("out of range memory access")
 	}
 	return data, nil
+}
+
+// A fake RandSource for having fewer memory allocations.
+//
+// Should not be used with modules that do need an access to random functions.
+type cheapRand struct{}
+
+var _ io.Reader = cheapRand{}
+
+func (cheapRand) Read(b []byte) (int, error) {
+	return len(b), nil
 }
