@@ -2,6 +2,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.2 h1:p1EgwI/C7NhT0JmVkwCD2ZBK8j4aeHQX2pMHH
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/hybridgroup/wasman v0.0.0-20240223122031-5eaa03843b74 h1:kTeT4KPA7SW0lyN0+a39F07Y6/F01pQc6/UWlXlLpd8=
 github.com/hybridgroup/wasman v0.0.0-20240223122031-5eaa03843b74/go.mod h1:rLavUo4P0xVcDeDnViYEpPQPoACmp1py9UTLPY/R7Lg=
+github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4 h1:MUh9e2izck9aROiwDsDm24UU7kHieYM2911U1t+NASs=
+github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4/go.mod h1:0U0G41+ochRKoPKCJlh0jMg1CHkyfK8kDqiirMmKY8A=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/urfave/cli/v2 v2.27.1 h1:8xSQ6szndafKVRmfyeUMxkNUJQMjL1F2zmsZ+qHpfho=
