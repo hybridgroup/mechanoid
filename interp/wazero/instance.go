@@ -32,7 +32,7 @@ func (i *Instance) Call(name string, args ...any) (any, error) {
 }
 
 func encodeArgs(args []any) []uint64 {
-	encoded := make([]uint64, len(args))
+	encoded := make([]uint64, 0, len(args))
 	for _, arg := range args {
 		encoded = append(encoded, encodeArg(arg))
 	}
@@ -51,12 +51,14 @@ func encodeArg(arg any) uint64 {
 		return api.EncodeF64(val)
 	case uint32:
 		return api.EncodeU32(val)
+	case uint64:
+		return uint64(val)
 	}
 	panic("bad arg type")
 }
 
 func decodeResults(results []uint64, vtypes []api.ValueType) []any {
-	decoded := make([]any, len(results))
+	decoded := make([]any, 0, len(results))
 	for i, result := range results {
 		vtype := vtypes[i]
 		decoded = append(decoded, decodeResult(result, vtype))
