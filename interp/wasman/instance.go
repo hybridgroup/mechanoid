@@ -86,7 +86,7 @@ func decodeResult(result uint64, vtype types.ValueType) any {
 	case types.ValueTypeI32:
 		return int32(result)
 	case types.ValueTypeI64:
-		return int64(result)
+		return int32(result)
 	}
 	panic("unreachable")
 }
