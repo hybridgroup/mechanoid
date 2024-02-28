@@ -2,9 +2,15 @@ package tester
 
 import (
 	"testing"
+	"unsafe"
 
 	"github.com/hybridgroup/mechanoid/engine"
 )
+
+type testingType struct {
+	val1 string
+	val2 string
+}
 
 func InstanceTest(t *testing.T, i engine.Interpreter) {
 	if err := i.Init(); err != nil {
@@ -45,7 +51,7 @@ func InstanceTest(t *testing.T, i engine.Interpreter) {
 		if err != nil {
 			t.Errorf("Instance.Call() failed: %v", err)
 		}
-		if int64(results.(int32)) != int64(3) {
+		if int64(results.(int64)) != int64(3) {
 			t.Errorf("Instance.Call() failed: %v", results)
 		}
 	})
@@ -55,7 +61,7 @@ func InstanceTest(t *testing.T, i engine.Interpreter) {
 		if err != nil {
 			t.Errorf("Instance.Call() failed: %v", err)
 		}
-		if uint64(results.(int32)) != uint64(3) {
+		if uint64(results.(int64)) != uint64(3) {
 			t.Errorf("Instance.Call() failed: %v", results)
 		}
 	})
@@ -77,6 +83,23 @@ func InstanceTest(t *testing.T, i engine.Interpreter) {
 		}
 		if results != float64(445.0) {
 			t.Errorf("Instance.Call() failed: %v", results)
+		}
+	})
+
+	t.Run("Call externref", func(t *testing.T) {
+		thing := testingType{val1: "hello", val2: "world"}
+
+		// This is a hack to get the pointer value as an int32
+		// Externelref is an opaque type, so we can't do anything with it
+		// We just want to make sure that the pointer value is passed through correctly
+		ptr := uintptr(unsafe.Pointer(&thing)) & 0xFFFFFFFF
+
+		results, err := inst.Call("test_externref", ptr)
+		if err != nil {
+			t.Errorf("Instance.Call() failed: %v", err)
+		}
+		if uintptr(results.(int32)) != ptr {
+			t.Errorf("Instance.Call() incorrect: %v %v", ptr, results)
 		}
 	})
 }
