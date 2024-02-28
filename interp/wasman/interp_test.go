@@ -2,6 +2,8 @@ package wasman
 
 import (
 	"testing"
+
+	"github.com/hybridgroup/mechanoid/interp/tester"
 )
 
 func TestName(t *testing.T) {
@@ -12,23 +14,19 @@ func TestName(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	i := Interpreter{}
-	err := i.Init()
-	if err != nil {
-		t.Errorf("Interpreter.Init() failed: %v", err)
-	}
+	tester.InitTest(t, &Interpreter{})
 }
 
 func TestLoad(t *testing.T) {
-	t.Skip("TODO: implement TestLoad")
+	tester.LoadTest(t, &Interpreter{})
 }
 
 func TestRun(t *testing.T) {
-	t.Skip("TODO: implement TestRun")
+	tester.RunTest(t, &Interpreter{})
 }
 
 func TestHalt(t *testing.T) {
-	t.Skip("TODO: implement TestHalt")
+	tester.HaltTest(t, &Interpreter{})
 }
 
 func TestDefineFunc(t *testing.T) {
