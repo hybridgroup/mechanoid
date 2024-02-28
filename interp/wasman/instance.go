@@ -64,6 +64,8 @@ func encodeArg(arg any) uint64 {
 		return uint64(val)
 	case uint64:
 		return uint64(val)
+	case uintptr:
+		return uint64(val)
 	}
 	panic("bad arg type")
 }
@@ -86,7 +88,9 @@ func decodeResult(result uint64, vtype types.ValueType) any {
 	case types.ValueTypeI32:
 		return int32(result)
 	case types.ValueTypeI64:
-		return int32(result)
+		return int64(result)
+	case types.ValueTypeExternref:
+		return uintptr(result)
 	}
 	panic("unreachable")
 }
