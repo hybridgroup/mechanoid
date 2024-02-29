@@ -8,6 +8,16 @@ Mechanoid is an open source framework for building and running applications on s
 
 Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware, in part thanks to being written using [TinyGo](https://tinygo.org/).
 
+## Why would you want to do this?
+
+- Devices that are extensible. Think appstores, downloadable add-ons, or end-user programmable.
+- Environment is sandboxed, so bricking the device is less likely.
+- Code you write being compiled to WASM is very compact.
+- Devices that need a reliable way to update them.
+- OTA updates via slow/high latency are more viable.
+- Specific APIs can be provided by the host application to guest modules, so application-specific code matches the kind of code you are trying to write. Games, industrial control systems.
+- Develop code in Rust/Zig or any language that can compile to WASM, and run it on the same hardware, using the same APIs.
+
 ## Getting started
 
 - Install the [Mechanoid command line tool](./cmd/mecha/README.md)
