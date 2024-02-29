@@ -1,8 +1,6 @@
 package engine
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestEngine(t *testing.T) {
 	t.Run("cannot init without interpreter", func(t *testing.T) {
@@ -52,4 +50,8 @@ func (i *mockInterpreter) DefineFunc(modulename, funcname string, f interface{})
 
 func (i *mockInterpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 	return nil, nil
+}
+
+func (i *mockInterpreter) References() *ExternalReferences {
+	return nil
 }

@@ -12,8 +12,8 @@ type ExternalReferences struct {
 }
 
 // NewReferences creates a new ExternalReferences store.
-func NewReferences() *ExternalReferences {
-	return &ExternalReferences{
+func NewReferences() ExternalReferences {
+	return ExternalReferences{
 		refs: make(map[int32]uintptr),
 	}
 }
