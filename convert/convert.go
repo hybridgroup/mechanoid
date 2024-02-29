@@ -44,3 +44,18 @@ func IntToString(i int) string {
 
 	return string(result)
 }
+
+// WasmPtrToBytes returns a slice of bytes from WebAssembly compatible numeric types
+// representing its pointer and length.
+func WasmPtrToBytes(ptr uint32, size uint32) []byte {
+	return unsafe.Slice((*byte)(unsafe.Pointer(uintptr(ptr))), size)
+}
+
+// BytesToWasmPtr returns a pointer and size pair for the given string in a way
+// compatible with WebAssembly numeric types.
+// The returned pointer aliases the string hence the string must be kept alive
+// until ptr is no longer needed.
+func BytesToWasmPtr(b []byte) (uint32, uint32) {
+	ptr := uintptr(unsafe.Pointer(unsafe.SliceData(b)))
+	return uint32(ptr), uint32(len(b))
+}
