@@ -104,6 +104,8 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
 		return wasmaneng.DefineFunc20(i.linker, moduleName, funcName, tf)
 	case func(uint32, uint32) uint32:
 		return wasmaneng.DefineFunc21(i.linker, moduleName, funcName, tf)
+	case func(uint32, uint32, uint32) uint32:
+		return wasmaneng.DefineFunc31(i.linker, moduleName, funcName, tf)
 	default:
 		return engine.ErrInvalidFuncType
 	}
