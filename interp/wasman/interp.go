@@ -14,6 +14,8 @@ type Interpreter struct {
 	module   *wasmaneng.Module
 	instance *wasmaneng.Instance
 	Memory   []byte
+
+	references engine.ExternalReferences
 }
 
 func (i *Interpreter) Name() string {
@@ -33,6 +35,8 @@ func (i *Interpreter) Init() error {
 			return err
 		}
 	}
+
+	i.references = engine.NewReferences()
 
 	return nil
 }
@@ -114,4 +118,9 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 	}
 
 	return i.instance.Memory.Value[ptr : ptr+sz], nil
+}
+
+// References are the external references managed by the host module.
+func (i *Interpreter) References() *engine.ExternalReferences {
+	return &i.references
 }

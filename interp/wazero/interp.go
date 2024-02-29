@@ -14,6 +14,8 @@ type Interpreter struct {
 	runtime wazero.Runtime
 	defs    map[string]map[string]any
 	module  api.Module
+
+	references engine.ExternalReferences
 }
 
 func (i *Interpreter) Name() string {
@@ -26,6 +28,7 @@ func (i *Interpreter) Init() error {
 	conf = conf.WithDebugInfoEnabled(false)
 	conf = conf.WithMemoryLimitPages(1)
 	i.runtime = wazero.NewRuntimeWithConfig(ctx, conf)
+	i.references = engine.NewReferences()
 	return nil
 }
 
@@ -93,6 +96,11 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 		return nil, errors.New("out of range memory access")
 	}
 	return data, nil
+}
+
+// References are the external references managed by the host module.
+func (i *Interpreter) References() *engine.ExternalReferences {
+	return &i.references
 }
 
 // A fake RandSource for having fewer memory allocations.
