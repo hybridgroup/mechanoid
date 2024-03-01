@@ -9,6 +9,7 @@ import (
 
 type Instance struct {
 	module api.Module
+	ctx    context.Context
 }
 
 func (i *Instance) Call(name string, args ...any) (any, error) {
@@ -16,8 +17,7 @@ func (i *Instance) Call(name string, args ...any) (any, error) {
 	if f == nil {
 		return nil, errors.New("Function not found")
 	}
-	ctx := context.Background()
-	rawResults, err := f.Call(ctx, encodeArgs(args)...)
+	rawResults, err := f.Call(i.ctx, encodeArgs(args)...)
 	if err != nil {
 		return nil, err
 	}

@@ -12,8 +12,8 @@ import (
 
 type Interpreter struct {
 	runtime wazero.Runtime
-	defs    map[string]map[string]any
 	module  api.Module
+	ctx     context.Context
 }
 
 func (i *Interpreter) Name() string {
@@ -21,59 +21,36 @@ func (i *Interpreter) Name() string {
 }
 
 func (i *Interpreter) Init() error {
-	ctx := context.Background()
+	i.ctx = context.Background()
 	conf := wazero.NewRuntimeConfigInterpreter()
 	conf = conf.WithDebugInfoEnabled(false)
 	conf = conf.WithMemoryLimitPages(1)
-	i.runtime = wazero.NewRuntimeWithConfig(ctx, conf)
+	i.runtime = wazero.NewRuntimeWithConfig(i.ctx, conf)
 	return nil
 }
 
 func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
-	if i.defs == nil {
-		i.defs = make(map[string]map[string]any)
-	}
-	if _, exists := i.defs[moduleName]; !exists {
-		i.defs[moduleName] = make(map[string]any)
-	}
-	i.defs[moduleName][funcName] = f
-	return nil
+	panic("unsupported, use wzero.Modules instead")
 }
 
 func (i *Interpreter) Load(code []byte) error {
 	var err error
-	ctx := context.Background()
 	conf := wazero.NewModuleConfig()
 	conf = conf.WithRandSource(cheapRand{})
-	for moduleName, funcs := range i.defs {
-		b := i.runtime.NewHostModuleBuilder(moduleName)
-		for funcName, f := range funcs {
-			b = b.NewFunctionBuilder().WithFunc(f).Export(funcName)
-		}
-		compiled, err := b.Compile(ctx)
-		if err != nil {
-			return err
-		}
-		_, err = i.runtime.InstantiateModule(ctx, compiled, conf)
-		if err != nil {
-			return err
-		}
-	}
-	i.module, err = i.runtime.InstantiateWithConfig(ctx, code, conf)
+	i.module, err = i.runtime.InstantiateWithConfig(i.ctx, code, conf)
 	return err
 }
 
 func (i *Interpreter) Run() (engine.Instance, error) {
 	var err error
-	ctx := context.Background()
 	init := i.module.ExportedFunction("_initialize")
 	if init != nil {
-		_, err = init.Call(ctx)
+		_, err = init.Call(i.ctx)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return &Instance{i.module}, nil
+	return &Instance{i.module, i.ctx}, nil
 }
 
 func (i *Interpreter) Halt() error {
