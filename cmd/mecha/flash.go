@@ -20,9 +20,9 @@ func flash(cCtx *cli.Context) error {
 
 	var cmd *exec.Cmd
 	if cCtx.Bool("monitor") {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-target", targetName, "-monitor", ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-target", targetName, "-monitor", ".")
 	} else {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-target", targetName, ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-target", targetName, ".")
 	}
 
 	var stdoutBuf, stderrBuf bytes.Buffer
@@ -30,7 +30,7 @@ func flash(cCtx *cli.Context) error {
 	cmd.Stderr = io.MultiWriter(os.Stderr, &stderrBuf)
 
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("tinygo flash -size short -target %s .: %v\n", targetName, err) //, stderr.Bytes())
+		log.Fatalf("tinygo flash -size short -stack-size 8kb -target %s .: %v\n", targetName, err) //, stderr.Bytes())
 	}
 
 	// print the monitoring output
