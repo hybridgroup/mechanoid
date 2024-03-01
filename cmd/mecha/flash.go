@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 
@@ -30,7 +29,8 @@ func flash(cCtx *cli.Context) error {
 	cmd.Stderr = io.MultiWriter(os.Stderr, &stderrBuf)
 
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("tinygo flash -size short -stack-size 8kb -target %s .: %v\n", targetName, err) //, stderr.Bytes())
+		fmt.Printf("tinygo flash -size short -stack-size 8kb -target %s .: %v\n", targetName, err)
+		os.Exit(1)
 	}
 
 	// print the monitoring output

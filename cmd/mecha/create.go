@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,7 +55,8 @@ func createModule(cCtx *cli.Context) error {
 
 	err := os.MkdirAll("modules", 0777)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	os.Chdir("modules")
 	defer os.Chdir("..")
@@ -67,7 +67,8 @@ func createModule(cCtx *cli.Context) error {
 
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	return os.Rename(filepath.Join(wd, basename, filepath.Base(templateName)+".json"),
@@ -80,7 +81,8 @@ func createFromTemplate(templ, proj string) error {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("gonew %s %s: %v\n%s%s", templ, proj, err, stderr.Bytes(), stdout.Bytes())
+		fmt.Printf("gonew %s %s: %v\n%s%s", templ, proj, err, stderr.Bytes(), stdout.Bytes())
+		os.Exit(1)
 	}
 
 	return nil
@@ -92,7 +94,9 @@ func getModuleName() (string, error) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("go list -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
+		fmt.Printf("go list -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
+		os.Exit(1)
+
 	}
 
 	return strings.TrimSuffix(stdout.String(), "\n"), nil
