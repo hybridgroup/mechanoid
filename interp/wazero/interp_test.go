@@ -29,6 +29,10 @@ func TestHalt(t *testing.T) {
 	tester.HaltTest(t, &Interpreter{})
 }
 
+func TestExternalReferences(t *testing.T) {
+	tester.ReferencesTest(t, &Interpreter{})
+}
+
 func TestDefineFunc(t *testing.T) {
 	t.Skip("TODO: implement TestDefineFunc")
 }
