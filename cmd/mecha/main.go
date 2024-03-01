@@ -20,21 +20,21 @@ func main() {
 		Commands: []*cli.Command{
 			{
 				Name:      "new",
-				Usage:     "create new Mechanoid project",
+				Usage:     "Create new Mechanoid project or module",
 				ArgsUsage: "<name e.g. 'domain.com/projectname'>",
 				Action:    createProject,
 				Flags:     templateFlags,
 				Subcommands: []*cli.Command{
 					{
 						Name:      "project",
-						Usage:     "create new Mechanoid project",
+						Usage:     "Create new Mechanoid project",
 						ArgsUsage: "<name e.g. 'domain.com/projectname'>",
 						Flags:     templateFlags,
 						Action:    createProject,
 					},
 					{
 						Name:      "module",
-						Usage:     "create new Mechanoid module",
+						Usage:     "Create new Mechanoid module",
 						ArgsUsage: "<name e.g. 'domain.com/modulename'>",
 						Flags:     templateFlags,
 						Action:    createModule,
@@ -43,12 +43,12 @@ func main() {
 			},
 			{
 				Name:   "build",
-				Usage:  "build Mechanoid project to binary file",
+				Usage:  "Build binary files for Mechanoid project",
 				Action: build,
 			},
 			{
 				Name:      "flash",
-				Usage:     "flash Mechanoid project to board",
+				Usage:     "Flash Mechanoid project to hardware",
 				Action:    flash,
 				ArgsUsage: "<board-name>",
 				Flags: []cli.Flag{
@@ -57,8 +57,13 @@ func main() {
 			},
 			{
 				Name:   "test",
-				Usage:  "run tests for Mechanoid project",
+				Usage:  "Run tests for Mechanoid project",
 				Action: test,
+			},
+			{
+				Name:   "about",
+				Usage:  "About Mechanoid",
+				Action: about,
 			},
 		},
 	}
