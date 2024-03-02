@@ -90,11 +90,11 @@ func createFromTemplate(templ, proj string) error {
 
 func getModuleName() (string, error) {
 	var stdout, stderr bytes.Buffer
-	cmd := exec.Command("go", "list", "-f", "{{.ImportPath}}")
+	cmd := exec.Command("go", "list", "-e", "-f", "{{.ImportPath}}")
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("go list -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
+		fmt.Printf("go list -e -f {{.ImportPath}}: %v\n%s%s", err, stderr.Bytes(), stdout.Bytes())
 		os.Exit(1)
 
 	}
