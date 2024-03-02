@@ -91,11 +91,14 @@ Compile this program to WASM using Mechanoid:
 
 ```
 $ mecha build
+Building module ping
+   code    data     bss |   flash     ram
+      9       0       0 |       9       0
 ```
 
 ### Mechanoid host application
 
-This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the exported `Ping()` function:
+This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the module's `Ping()` function. That `Ping()` function will then call the host's exported `Pong()` function:
 
 ```go
 package main
@@ -153,34 +156,26 @@ func pongFunc() {
 }
 ```
 
-You can compile and flash the WASM runtime engine and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
+You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
 
 ```
 $ mecha flash -m pybadge
    code    data     bss |   flash     ram
- 101012    1736   72216 |  102748   73952
+ 101572    2044    6680 |  103616    8724
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 Mechanoid engine starting...
-Using interpreter...
+Using interpreter wasman
 Initializing engine...
-Initializing interpreter...
-Initializing devices...
-Defining func...
-Loading module...
+Defining host function...
+Loading WASM module...
 Running module...
-building index space
-initializing memory
-initializing functions
-initializing globals
-running start func
 Calling ping...
 pong
 Calling ping...
 pong
 Calling ping...
 pong
-Calling ping...
-pong
+...
 ```
 
 There are more examples available here:
