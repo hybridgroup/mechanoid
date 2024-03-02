@@ -61,6 +61,11 @@ func main() {
 				Action: test,
 			},
 			{
+				Name:   "monitor",
+				Usage:  "Monitor connection to hardware using the serial port",
+				Action: monitor,
+			},
+			{
 				Name:   "about",
 				Usage:  "About Mechanoid",
 				Action: about,
