@@ -1,9 +1,7 @@
 github.com/cpuguy83/go-md2man/v2 v2.0.2 h1:p1EgwI/C7NhT0JmVkwCD2ZBK8j4aeHQX2pMHHBfMQ6w=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
-github.com/hybridgroup/wasman v0.0.0-20240228124029-ecd9fd3f900a h1:6q1Gn1MR643sBn4PnvgX40jCCXmAyjuNXFfk8wirpds=
-github.com/hybridgroup/wasman v0.0.0-20240228124029-ecd9fd3f900a/go.mod h1:rLavUo4P0xVcDeDnViYEpPQPoACmp1py9UTLPY/R7Lg=
-github.com/hybridgroup/wasman v0.0.0-20240229144219-f3288962ab34 h1:XGX7Qt+ylSTF7VrwfXePwXAy2cK2iB6At+Ni/PcaNok=
-github.com/hybridgroup/wasman v0.0.0-20240229144219-f3288962ab34/go.mod h1:rLavUo4P0xVcDeDnViYEpPQPoACmp1py9UTLPY/R7Lg=
+github.com/hybridgroup/wasman v0.0.0-20240303155228-bc96a1c9a2cc h1:Ld9ng9AdthISNNd5JYTK2HGx/shBtAWNZdz9Gu/Z25k=
+github.com/hybridgroup/wasman v0.0.0-20240303155228-bc96a1c9a2cc/go.mod h1:rLavUo4P0xVcDeDnViYEpPQPoACmp1py9UTLPY/R7Lg=
 github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4 h1:MUh9e2izck9aROiwDsDm24UU7kHieYM2911U1t+NASs=
 github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4/go.mod h1:0U0G41+ochRKoPKCJlh0jMg1CHkyfK8kDqiirMmKY8A=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
