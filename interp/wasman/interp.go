@@ -1,6 +1,8 @@
 package wasman
 
 import (
+	"runtime"
+
 	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
 
@@ -57,6 +59,11 @@ func (i *Interpreter) Load(code []byte) error {
 }
 
 func (i *Interpreter) Run() (engine.Instance, error) {
+	ms := runtime.MemStats{}
+
+	runtime.ReadMemStats(&ms)
+	println("Heap start Run Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+
 	var err error
 	i.instance, err = i.linker.Instantiate(i.module)
 	if err != nil {
@@ -75,7 +82,22 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 }
 
 func (i *Interpreter) Halt() error {
+	ms := runtime.MemStats{}
+
+	runtime.ReadMemStats(&ms)
+	println("Heap start Halt Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+
+	// clean up extern refs
+	i.references.Clear()
 	i.instance = nil
+	i.module = nil
+
+	// force a garbage collection to free memory
+	runtime.GC()
+
+	runtime.ReadMemStats(&ms)
+	println("Heap start Halt after gc: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+
 	return nil
 }
 
