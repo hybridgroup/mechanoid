@@ -7,7 +7,6 @@ import "io"
 // by using bytes.Reader or fs.File respectively.
 type Reader interface {
 	io.Reader
-	io.ReaderAt
 	io.Seeker
 }
 
