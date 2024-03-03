@@ -1,6 +1,7 @@
 package tester
 
 import (
+	"bytes"
 	"testing"
 	"unsafe"
 
@@ -17,7 +18,7 @@ func InstanceTest(t *testing.T, i engine.Interpreter) {
 		t.Errorf("Interpreter.Init() failed: %v", err)
 	}
 
-	if err := i.Load(wasmData); err != nil {
+	if err := i.Load(bytes.NewReader(wasmData)); err != nil {
 		t.Errorf("Interpreter.Load() failed: %v", err)
 	}
 

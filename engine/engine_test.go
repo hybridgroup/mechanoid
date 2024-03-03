@@ -32,7 +32,7 @@ func (i *mockInterpreter) Init() error {
 	return nil
 }
 
-func (i *mockInterpreter) Load(code []byte) error {
+func (i *mockInterpreter) Load(code Reader) error {
 	return nil
 }
 

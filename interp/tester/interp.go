@@ -1,6 +1,7 @@
 package tester
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/hybridgroup/mechanoid/engine"
@@ -26,7 +27,7 @@ func LoadTest(t *testing.T, i engine.Interpreter) {
 	if err != nil {
 		t.Errorf("Interpreter.Init() failed: %v", err)
 	}
-	if err := i.Load(wasmData); err != nil {
+	if err := i.Load(bytes.NewReader(wasmData)); err != nil {
 		t.Errorf("Interpreter.Load() failed: %v", err)
 	}
 }
@@ -36,7 +37,7 @@ func RunTest(t *testing.T, i engine.Interpreter) {
 	if err != nil {
 		t.Errorf("Interpreter.Init() failed: %v", err)
 	}
-	if err := i.Load(wasmData); err != nil {
+	if err := i.Load(bytes.NewReader(wasmData)); err != nil {
 		t.Errorf("Interpreter.Load() failed: %v", err)
 	}
 	if _, err := i.Run(); err != nil {
@@ -49,7 +50,7 @@ func HaltTest(t *testing.T, i engine.Interpreter) {
 	if err != nil {
 		t.Errorf("Interpreter.Init() failed: %v", err)
 	}
-	if err := i.Load(wasmData); err != nil {
+	if err := i.Load(bytes.NewReader(wasmData)); err != nil {
 		t.Errorf("Interpreter.Load() failed: %v", err)
 	}
 	if _, err := i.Run(); err != nil {
