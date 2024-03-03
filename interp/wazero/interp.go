@@ -43,7 +43,7 @@ func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
 	return nil
 }
 
-func (i *Interpreter) Load(code []byte) error {
+func (i *Interpreter) Load(code engine.Reader) error {
 	var err error
 	ctx := context.Background()
 	conf := wazero.NewModuleConfig()
@@ -62,7 +62,12 @@ func (i *Interpreter) Load(code []byte) error {
 			return err
 		}
 	}
-	i.module, err = i.runtime.InstantiateWithConfig(ctx, code, conf)
+
+	data, err := io.ReadAll(code)
+	if err != nil {
+		return err
+	}
+	i.module, err = i.runtime.InstantiateWithConfig(ctx, data, conf)
 	return err
 }
 

@@ -43,14 +43,14 @@ func (i *Interpreter) Init() error {
 	return nil
 }
 
-func (i *Interpreter) Load(code []byte) error {
+func (i *Interpreter) Load(code engine.Reader) error {
 	conf := config.ModuleConfig{
 		Recover: true,
 		Logger:  mechanoid.Log,
 	}
 
 	var err error
-	i.module, err = wasmaneng.NewModuleFromBytes(conf, code)
+	i.module, err = wasmaneng.NewModule(conf, code)
 	if err != nil {
 		return err
 	}
