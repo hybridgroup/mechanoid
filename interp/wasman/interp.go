@@ -48,9 +48,9 @@ func (i *Interpreter) Init() error {
 func (i *Interpreter) Load(code engine.Reader) error {
 	ms := runtime.MemStats{}
 
-	if mechanoid.Debug {
+	if mechanoid.Debugging {
 		runtime.ReadMemStats(&ms)
-		println("Interpreter Load - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+		mechanoid.Debug("Interpreter Load - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
 
 	conf := config.ModuleConfig{
@@ -70,9 +70,9 @@ func (i *Interpreter) Load(code engine.Reader) error {
 func (i *Interpreter) Run() (engine.Instance, error) {
 	ms := runtime.MemStats{}
 
-	if mechanoid.Debug {
+	if mechanoid.Debugging {
 		runtime.ReadMemStats(&ms)
-		println("Interpreter Run - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+		mechanoid.Debug("Interpreter Run - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
 
 	var err error
@@ -95,9 +95,9 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 func (i *Interpreter) Halt() error {
 	ms := runtime.MemStats{}
 
-	if mechanoid.Debug {
+	if mechanoid.Debugging {
 		runtime.ReadMemStats(&ms)
-		println("Interpreter Halt - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+		mechanoid.Debug("Interpreter Halt - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
 
 	// clean up extern refs
@@ -108,9 +108,9 @@ func (i *Interpreter) Halt() error {
 	// force a garbage collection to free memory
 	runtime.GC()
 
-	if mechanoid.Debug {
+	if mechanoid.Debugging {
 		runtime.ReadMemStats(&ms)
-		println("Interpreter Halt after GC - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+		mechanoid.Debug("Interpreter Halt after GC - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
 
 	return nil
