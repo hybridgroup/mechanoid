@@ -2,6 +2,7 @@ package hardware
 
 import (
 	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/orsinium-labs/wypes"
 )
 
 var _ engine.Device = &SPI{}
@@ -18,31 +19,28 @@ func NewSPIDevice(e *engine.Engine) *SPI {
 	}
 }
 
-func (s *SPI) Init() error {
-	// this is where the host machine's SPI would be initialized
-	// and all the hosted functions setup
-	if s.Engine == nil {
-		return engine.ErrInvalidEngine
-	}
-
-	if err := s.Engine.Interpreter.DefineFunc("machine", "__tinygo_spi_configure", SPIConfigure); err != nil {
-		println(err.Error())
-		return err
-	}
-
-	if err := s.Engine.Interpreter.DefineFunc("machine", "__tinygo_spi_transfer", SPITransfer); err != nil {
-		println(err.Error())
-		return err
-	}
-
+func (SPI) Init() error {
 	return nil
 }
 
-func SPIConfigure(bus uint8, sck Pin, SDO Pin, SDI Pin) {
-	// Not implemented
+func (SPI) Modules() wypes.Modules {
+	// this is where the host machine's SPI would be initialized
+	// and all the hosted functions setup
+
+	return wypes.Modules{
+		"machine": wypes.Module{
+			"__tinygo_spi_configure": wypes.H4(SPIConfigure),
+			"__tinygo_spi_transfer":  wypes.H2(SPITransfer),
+		},
+	}
 }
 
-func SPITransfer(bus uint8, w uint8) uint8 {
+func SPIConfigure(bus wypes.UInt8, sck wypes.UInt8, SDO wypes.UInt8, SDI wypes.UInt8) wypes.Void {
+	// Not implemented
+	return wypes.Void{}
+}
+
+func SPITransfer(bus wypes.UInt8, w wypes.UInt8) wypes.UInt8 {
 	// Not implemented
 	return 0
 }
