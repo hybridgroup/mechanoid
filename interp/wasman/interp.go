@@ -1,6 +1,7 @@
 package wasman
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/hybridgroup/mechanoid"
@@ -9,15 +10,15 @@ import (
 
 	wasmaneng "github.com/hybridgroup/wasman"
 	"github.com/hybridgroup/wasman/config"
+	"github.com/hybridgroup/wasman/types"
 	"github.com/hybridgroup/wasman/wasm"
 )
 
 type Interpreter struct {
-	linker   *wasmaneng.Linker
-	module   *wasmaneng.Module
-	instance *wasmaneng.Instance
-	Memory   []byte
-
+	linker     *wasmaneng.Linker
+	module     *wasmaneng.Module
+	instance   *wasmaneng.Instance
+	Memory     []byte
 	references engine.ExternalReferences
 }
 
@@ -103,7 +104,44 @@ func (i *Interpreter) Halt() error {
 }
 
 func (i *Interpreter) SetModules(modules wypes.Modules) error {
-	panic("not implemented")
+	mechanoid.Log("Registering host modules...")
+	refs := wypes.NewMapRefs()
+	for modName, mod := range modules {
+		err := i.defineModule(modName, mod, refs)
+		if err != nil {
+			return fmt.Errorf("define module %s: %v", modName, err)
+		}
+	}
+	return nil
+}
+
+func (i *Interpreter) defineModule(modName string, m wypes.Module, refs wypes.Refs) error {
+	for funcName, funcDef := range m {
+		sig := &types.FuncType{
+			InputTypes:  wrapValueTypes(funcDef.ParamValueTypes()),
+			ReturnTypes: wrapValueTypes(funcDef.ResultValueTypes()),
+		}
+		err := i.linker.DefineRawHostFunc(modName, funcName, sig, i.adaptHostFunc(funcDef, refs))
+		if err != nil {
+			return fmt.Errorf("define %s.%s: %v", modName, funcName, err)
+		}
+	}
+	return nil
+}
+
+func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) wasm.RawHostFunc {
+	return func(stack []uint64) []uint64 {
+		adaptedStack := wypes.SliceStack(stack)
+		// TODO(@orsinium): adapt and pass the actual memory
+		store := wypes.Store{
+			Memory:  nil,
+			Stack:   &adaptedStack,
+			Refs:    refs,
+			Context: nil,
+		}
+		hf.Call(store)
+		return stack
+	}
 }
 
 func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
@@ -120,4 +158,12 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 // References are the external references managed by the host module.
 func (i *Interpreter) References() *engine.ExternalReferences {
 	return &i.references
+}
+
+func wrapValueTypes(ins []wypes.ValueType) []types.ValueType {
+	outs := make([]types.ValueType, 0, len(ins))
+	for _, in := range ins {
+		outs = append(outs, types.ValueType(in))
+	}
+	return outs
 }
