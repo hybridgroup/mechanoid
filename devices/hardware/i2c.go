@@ -2,56 +2,47 @@ package hardware
 
 import (
 	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/orsinium-labs/wypes"
 )
 
 var _ engine.Device = &I2C{}
 
 type I2CConfig struct{}
 
-type I2C struct {
-	Engine *engine.Engine
+type I2C struct{}
+
+func NewI2CDevice() *I2C {
+	return &I2C{}
 }
 
-func NewI2CDevice(e *engine.Engine) *I2C {
-	return &I2C{
-		Engine: e,
-	}
-}
-
-func (i2c *I2C) Init() error {
-	// this is where the host machine's I2C would be initialized
-	// and all the hosted functions setup
-	if i2c.Engine == nil {
-		return engine.ErrInvalidEngine
-	}
-
-	if err := i2c.Engine.Interpreter.DefineFunc("machine", "__tinygo_i2c_configure", I2CConfigure); err != nil {
-		println(err.Error())
-		return err
-	}
-
-	if err := i2c.Engine.Interpreter.DefineFunc("machine", "__tinygo_i2c_set_baud_rate", I2CSetBaudRate); err != nil {
-		println(err.Error())
-		return err
-	}
-
-	if err := i2c.Engine.Interpreter.DefineFunc("machine", "__tinygo_i2c_transfer", I2CTransfer); err != nil {
-		println(err.Error())
-		return err
-	}
-
+func (I2C) Init() error {
 	return nil
 }
 
-func I2CConfigure(bus uint8, scl Pin, sda Pin) {
-	// Not implemented
+func (i2c *I2C) Modules() wypes.Modules {
+	// this is where the host machine's I2C would be initialized
+	// and all the hosted functions setup
+
+	return wypes.Modules{
+		"machine": wypes.Module{
+			"__tinygo_i2c_configure":     wypes.H3(I2CConfigure),
+			"__tinygo_i2c_set_baud_rate": wypes.H2(I2CSetBaudRate),
+			"__tinygo_i2c_transfer":      wypes.H5(I2CTransfer),
+		},
+	}
 }
 
-func I2CSetBaudRate(bus uint8, br uint32) {
+func I2CConfigure(bus wypes.UInt8, scl wypes.UInt8, sda wypes.UInt8) wypes.Void {
 	// Not implemented
+	return wypes.Void{}
 }
 
-func I2CTransfer(bus uint8, w *byte, wlen int, r *byte, rlen int) int {
+func I2CSetBaudRate(bus wypes.UInt8, br wypes.UInt32) wypes.Void {
+	// Not implemented
+	return wypes.Void{}
+}
+
+func I2CTransfer(bus wypes.UInt8, w wypes.Byte, wlen wypes.Int, r wypes.Byte, rlen wypes.Int) wypes.Int {
 	// Not implemented
 	return 0
 }

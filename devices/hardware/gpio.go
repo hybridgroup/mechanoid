@@ -2,6 +2,7 @@ package hardware
 
 import (
 	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/orsinium-labs/wypes"
 )
 
 var _ engine.Device = &GPIO{}
@@ -20,53 +21,42 @@ type PinConfig struct {
 	Mode PinMode
 }
 
-type GPIO struct {
-	Engine *engine.Engine
+type GPIO struct{}
+
+func NewGPIODevice() *GPIO {
+	return &GPIO{}
 }
 
-const moduleName = "env"
-
-func NewGPIODevice(e *engine.Engine) *GPIO {
-	return &GPIO{
-		Engine: e,
-	}
-}
-
-func (g *GPIO) Init() error {
-	// this is where the host machine's GPIO would be initialized
-	// and all the hosted functions setup
-	if g.Engine == nil {
-		return engine.ErrInvalidEngine
-	}
-
-	if err := g.Engine.Interpreter.DefineFunc(moduleName, "__tinygo_gpio_configure", PinConfigure); err != nil {
-		println(err.Error())
-		return err
-	}
-
-	if err := g.Engine.Interpreter.DefineFunc(moduleName, "__tinygo_gpio_set", PinSet); err != nil {
-		println(err.Error())
-		return err
-	}
-
-	if err := g.Engine.Interpreter.DefineFunc(moduleName, "__tinygo_gpio_get", PinGet); err != nil {
-		println(err.Error())
-		return err
-	}
-
+func (GPIO) Init() error {
 	return nil
 }
 
-func PinConfigure(pin int32, config int32) {
-	pinConfigure(Pin(pin), PinConfig{Mode: PinMode(config)})
+func (GPIO) Modules() wypes.Modules {
+	// this is where the host machine's GPIO would be initialized
+	// and all the hosted functions setup
+
+	return wypes.Modules{
+		"env": wypes.Module{
+			"__tinygo_adc_read":       wypes.H1(ADCRead),
+			"__tinygo_gpio_configure": wypes.H2(PinConfigure),
+			"__tinygo_gpio_set":       wypes.H2(PinSet),
+			"__tinygo_gpio_get":       wypes.H1(PinGet),
+		},
+	}
 }
 
-func PinSet(pin int32, value int32) {
+func PinConfigure(pin wypes.Int32, config wypes.Int32) wypes.Void {
+	pinConfigure(Pin(pin), PinConfig{Mode: PinMode(config)})
+	return wypes.Void{}
+}
+
+func PinSet(pin wypes.Int32, value wypes.Int32) wypes.Void {
 	v := value != 0
 	pinSet(Pin(pin), v)
+	return wypes.Void{}
 }
 
-func PinGet(pin int32) int32 {
+func PinGet(pin wypes.Int32) wypes.Int32 {
 	if pinGet(Pin(pin)) {
 		return 1
 	}

@@ -1,6 +1,10 @@
 package engine
 
-import "io"
+import (
+	"io"
+
+	"github.com/orsinium-labs/wypes"
+)
 
 // Reader interface is used to load WASM code.
 // You can fulfill this interface from a []byte or a file
@@ -21,8 +25,8 @@ type Interpreter interface {
 	Run() (Instance, error)
 	// Halt halts the interpreter.
 	Halt() error
-	// DefineFunc defines a function in the host module.
-	DefineFunc(module, name string, f interface{}) error
+	// SetModules attaches the given host modules to the runtime.
+	SetModules(wypes.Modules) error
 	// MemoryData returns a slice of memory data from the memory managed by the host.
 	MemoryData(ptr, sz uint32) ([]byte, error)
 	// References are the external references managed by the host module.

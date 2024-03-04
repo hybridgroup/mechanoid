@@ -5,6 +5,7 @@ import (
 
 	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/orsinium-labs/wypes"
 
 	wasmaneng "github.com/hybridgroup/wasman"
 	"github.com/hybridgroup/wasman/config"
@@ -114,36 +115,8 @@ func (i *Interpreter) Halt() error {
 	return nil
 }
 
-// TODO: better implementation using generics?
-func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
-	switch tf := f.(type) {
-	case func():
-		return wasmaneng.DefineFunc(i.linker, moduleName, funcName, tf)
-	case func() int32:
-		return wasmaneng.DefineFunc01(i.linker, moduleName, funcName, tf)
-	case func(int32):
-		return wasmaneng.DefineFunc10(i.linker, moduleName, funcName, tf)
-	case func(int32) int32:
-		return wasmaneng.DefineFunc11(i.linker, moduleName, funcName, tf)
-	case func(int32, int32):
-		return wasmaneng.DefineFunc20(i.linker, moduleName, funcName, tf)
-	case func(int32, int32) int32:
-		return wasmaneng.DefineFunc21(i.linker, moduleName, funcName, tf)
-	case func() uint32:
-		return wasmaneng.DefineFunc01(i.linker, moduleName, funcName, tf)
-	case func(uint32):
-		return wasmaneng.DefineFunc10(i.linker, moduleName, funcName, tf)
-	case func(uint32) uint32:
-		return wasmaneng.DefineFunc11(i.linker, moduleName, funcName, tf)
-	case func(uint32, uint32):
-		return wasmaneng.DefineFunc20(i.linker, moduleName, funcName, tf)
-	case func(uint32, uint32) uint32:
-		return wasmaneng.DefineFunc21(i.linker, moduleName, funcName, tf)
-	case func(uint32, uint32, uint32) uint32:
-		return wasmaneng.DefineFunc31(i.linker, moduleName, funcName, tf)
-	default:
-		return engine.ErrInvalidFuncType
-	}
+func (i *Interpreter) SetModules(modules wypes.Modules) error {
+	panic("not implemented")
 }
 
 func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {

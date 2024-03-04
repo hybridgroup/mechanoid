@@ -3,19 +3,20 @@ package wazero
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/orsinium-labs/wypes"
 	"github.com/tetratelabs/wazero"
 	"github.com/tetratelabs/wazero/api"
 )
 
 type Interpreter struct {
-	runtime wazero.Runtime
-	defs    map[string]map[string]any
-	module  api.Module
-
+	runtime    wazero.Runtime
+	module     api.Module
 	references engine.ExternalReferences
+	modules    wypes.Modules
 }
 
 func (i *Interpreter) Name() string {
@@ -32,40 +33,34 @@ func (i *Interpreter) Init() error {
 	return nil
 }
 
-func (i *Interpreter) DefineFunc(moduleName, funcName string, f any) error {
-	if i.defs == nil {
-		i.defs = make(map[string]map[string]any)
+func (i *Interpreter) SetModules(modules wypes.Modules) error {
+	if i.modules == nil {
+		i.modules = wypes.Modules{}
 	}
-	if _, exists := i.defs[moduleName]; !exists {
-		i.defs[moduleName] = make(map[string]any)
+	for modName, funcs := range modules {
+		_, found := i.modules[modName]
+		if !found {
+			i.modules[modName] = wypes.Module{}
+		}
+		for funcName, funcDef := range funcs {
+			i.modules[modName][funcName] = funcDef
+		}
 	}
-	i.defs[moduleName][funcName] = f
 	return nil
 }
 
 func (i *Interpreter) Load(code engine.Reader) error {
 	var err error
+	err = i.modules.DefineWazero(i.runtime, nil)
+	if err != nil {
+		return fmt.Errorf("register wazero host modules: %v", err)
+	}
 	ctx := context.Background()
 	conf := wazero.NewModuleConfig()
 	conf = conf.WithRandSource(cheapRand{})
-	for moduleName, funcs := range i.defs {
-		b := i.runtime.NewHostModuleBuilder(moduleName)
-		for funcName, f := range funcs {
-			b = b.NewFunctionBuilder().WithFunc(f).Export(funcName)
-		}
-		compiled, err := b.Compile(ctx)
-		if err != nil {
-			return err
-		}
-		_, err = i.runtime.InstantiateModule(ctx, compiled, conf)
-		if err != nil {
-			return err
-		}
-	}
-
 	data, err := io.ReadAll(code)
 	if err != nil {
-		return err
+		return fmt.Errorf("read wasm binary: %v", err)
 	}
 	i.module, err = i.runtime.InstantiateWithConfig(ctx, data, conf)
 	return err

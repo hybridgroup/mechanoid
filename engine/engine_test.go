@@ -1,6 +1,10 @@
 package engine
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/orsinium-labs/wypes"
+)
 
 func TestEngine(t *testing.T) {
 	t.Run("cannot init without interpreter", func(t *testing.T) {
@@ -44,7 +48,7 @@ func (i *mockInterpreter) Halt() error {
 	return nil
 }
 
-func (i *mockInterpreter) DefineFunc(modulename, funcname string, f interface{}) error {
+func (i *mockInterpreter) SetModules(wypes.Modules) error {
 	return nil
 }
 

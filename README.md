@@ -1,4 +1,4 @@
-![Mechanoid logo](https://mechanoid.io/images/logo-blue.png)
+# ![Mechanoid](https://mechanoid.io/images/logo-blue.png)
 
 Mechanoid is a framework for WebAssembly applications on embedded systems.
 
@@ -22,13 +22,13 @@ Mechanoid includes a command line interface tool that helps you create, test, an
 
 - Install the [Mechanoid command line tool](./cmd/mecha/README.md)
 
-    ```
+    ```bash
     go install github.com/hybridgroup/mechanoid/cmd/mecha@latest
     ```
 
 - Create a new project
 
-    ```
+    ```bash
     mecha new example.com/myproject
     ```
 
@@ -61,7 +61,7 @@ flowchart LR
 
 Here is how you create it using Mechanoid:
 
-```
+```bash
 mecha new project -template=simple example.com/myproject
 cd myproject
 mecha new module -template=ping ping
@@ -81,7 +81,7 @@ func pong()
 
 //go:export ping
 func ping() {
-	pong()
+ pong()
 }
 
 func main() {}
@@ -89,7 +89,7 @@ func main() {}
 
 Compile this program to WASM using Mechanoid:
 
-```
+```bash
 $ mecha build
 Building module ping
    code    data     bss |   flash     ram
@@ -101,64 +101,80 @@ Building module ping
 This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the module's `Ping()` function. That `Ping()` function will then call the host's exported `Pong()` function:
 
 ```go
-package main
-
 import (
-	_ "embed"
-	"time"
+    "bytes"
+    _ "embed"
 
-	"github.com/hybridgroup/mechanoid/engine"
-	"github.com/hybridgroup/mechanoid/interp/wasman"
+    "github.com/hybridgroup/mechanoid"
+    "github.com/hybridgroup/mechanoid/engine"
+    "github.com/hybridgroup/mechanoid/interp/wazero"
+    "github.com/orsinium-labs/wypes"
 )
 
 //go:embed ping.wasm
 var pingModule []byte
 
 func main() {
-	println("Mechanoid engine starting...")
-	eng := engine.NewEngine()
-
-	println("Using interpreter...")
-	eng.UseInterpreter(&wasman.Interpreter{})
-
-	println("Initializing engine...")
-	eng.Init()
-
-	println("Defining func...")
-	if err := eng.Interpreter.DefineFunc("hosted", "pong", pongFunc); err != nil {
-		println(err.Error())
-		return
-	}
-
-	println("Loading module...")
-	if err := eng.Interpreter.Load(pingModule); err != nil {
-		println(err.Error())
-		return
-	}
-
-	println("Running module...")
-	ins, err := eng.Interpreter.Run()
-	if err != nil {
-		println(err.Error())
-		return
-	}
-
-	for {
-		println("Calling ping...")
-		ins.Call("ping")
-
-		time.Sleep(1 * time.Second)
-	}
+    err := run()
+    if err != nil {
+        println(err.Error())
+    }
 }
 
-func pongFunc() {
-	println("pong")
+func pong() wypes.Void {
+    println("pong")
+    return wypes.Void{}
+}
+
+func run() error {
+    mechanoid.Log("Mechanoid engine starting...")
+    eng := engine.NewEngine()
+
+    mechanoid.Log("Using interpreter...")
+    interp := wazero.Interpreter{}
+    eng.UseInterpreter(&interp)
+
+    mechanoid.Log("Initializing engine...")
+    err := eng.Init()
+    if err != nil {
+        return err
+    }
+
+    mechanoid.Log("Defining func...")
+    modules := wypes.Modules{
+        "hosted": {
+            "pong":   wypes.H0(pong),
+            "ponger": wypes.H0(pong),
+        },
+    }
+    err = interp.SetModules(modules)
+    if err != nil {
+        return err
+    }
+
+    mechanoid.Log("Loading module...")
+    if err := eng.Interpreter.Load(bytes.NewReader(pingModule)); err != nil {
+        return err
+    }
+
+    mechanoid.Log("Running module...")
+    ins, err := eng.Interpreter.Run()
+    if err != nil {
+        return err
+    }
+
+    mechanoid.Log("Calling ping...")
+    _, err = ins.Call("ping")
+    if err != nil {
+        return err
+    }
+    return nil
 }
 ```
 
 You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
 
-```
+```bash
 $ mecha flash -m pybadge
    code    data     bss |   flash     ram
  101572    2044    6680 |  103616    8724
@@ -179,7 +195,7 @@ pong
 ```
 
 There are more examples available here:
-https://github.com/hybridgroup/mechanoid-examples
+<https://github.com/hybridgroup/mechanoid-examples>
 
 ## How it works
 

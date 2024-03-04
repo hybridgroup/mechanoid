@@ -2,6 +2,7 @@ package engine
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/hybridgroup/mechanoid"
 )
@@ -46,20 +47,25 @@ func (e *Engine) Init() error {
 
 	mechanoid.Log("Initializing interpreter...")
 	if err := e.Interpreter.Init(); err != nil {
-		return err
+		return fmt.Errorf("init interpreter: %v", err)
 	}
 
 	if e.FileStore != nil {
 		mechanoid.Log("Initializing file store...")
 		if err := e.FileStore.Init(); err != nil {
-			return err
+			return fmt.Errorf("init file store: %v", err)
 		}
 	}
 
 	mechanoid.Log("Initializing devices...")
 	for _, d := range e.Devices {
-		if err := d.Init(); err != nil {
-			return err
+		err := d.Init()
+		if err != nil {
+			return fmt.Errorf("init device: %v", err)
+		}
+		err = e.Interpreter.SetModules(d.Modules())
+		if err != nil {
+			return fmt.Errorf("define host modules for device: %v", err)
 		}
 	}
 	return nil
