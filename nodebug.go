@@ -2,4 +2,4 @@
 
 package mechanoid
 
-var debug = false
+var Debug = false
