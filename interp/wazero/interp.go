@@ -41,7 +41,8 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 	for modName, funcs := range modules {
 		_, found := i.modules[modName]
 		if !found {
-			i.modules[modName] = wypes.Module{}
+			i.modules[modName] = funcs
+			continue
 		}
 		for funcName, funcDef := range funcs {
 			i.modules[modName][funcName] = funcDef
