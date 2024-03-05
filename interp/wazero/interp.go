@@ -35,7 +35,8 @@ func (i *Interpreter) Init() error {
 
 func (i *Interpreter) SetModules(modules wypes.Modules) error {
 	if i.modules == nil {
-		i.modules = wypes.Modules{}
+		i.modules = modules
+		return nil
 	}
 	for modName, funcs := range modules {
 		_, found := i.modules[modName]
