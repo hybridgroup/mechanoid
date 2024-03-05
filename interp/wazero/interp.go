@@ -51,8 +51,7 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 }
 
 func (i *Interpreter) Load(code engine.Reader) error {
-	var err error
-	err = i.modules.DefineWazero(i.runtime, nil)
+	err := i.defineModules()
 	if err != nil {
 		return fmt.Errorf("register wazero host modules: %v", err)
 	}
@@ -65,6 +64,55 @@ func (i *Interpreter) Load(code engine.Reader) error {
 	}
 	i.module, err = i.runtime.InstantiateWithConfig(ctx, data, conf)
 	return err
+}
+
+func (i *Interpreter) defineModules() error {
+	if i.modules == nil {
+		return nil
+	}
+	refs := wypes.NewMapRefs()
+	for modName, mod := range i.modules {
+		err := i.defineModule(modName, mod, refs)
+		if err != nil {
+			return fmt.Errorf("define module %s: %v", modName, err)
+		}
+	}
+	return nil
+}
+
+func (i *Interpreter) defineModule(modName string, m wypes.Module, refs wypes.Refs) error {
+	mb := i.runtime.NewHostModuleBuilder(modName)
+	for funcName, funcDef := range m {
+		fb := mb.NewFunctionBuilder()
+		fb = fb.WithGoModuleFunction(
+			wazeroAdaptHostFunc(funcDef, refs),
+			funcDef.ParamValueTypes(),
+			funcDef.ResultValueTypes(),
+		)
+		mb = fb.Export(funcName)
+	}
+	ctx := context.Background()
+	compiled, err := mb.Compile(ctx)
+	if err != nil {
+		return err
+	}
+	conf := wazero.NewModuleConfig()
+	conf = conf.WithRandSource(cheapRand{})
+	_, err = i.runtime.InstantiateModule(ctx, compiled, conf)
+	return err
+}
+
+func wazeroAdaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) api.GoModuleFunction {
+	return api.GoModuleFunc(func(ctx context.Context, mod api.Module, stack []uint64) {
+		adaptedStack := wypes.SliceStack(stack)
+		store := wypes.Store{
+			Memory:  mod.Memory(),
+			Stack:   &adaptedStack,
+			Refs:    refs,
+			Context: ctx,
+		}
+		hf.Call(store)
+	})
 }
 
 func (i *Interpreter) Run() (engine.Instance, error) {
