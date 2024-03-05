@@ -15,7 +15,14 @@ func flash(cCtx *cli.Context) error {
 		return fmt.Errorf("target board required")
 	}
 
+	// build all the modules before flashing the hardware
+	if err := build(cCtx); err != nil {
+		return err
+	}
+
 	targetName := cCtx.Args().First()
+
+	fmt.Println("Flashing", targetName)
 
 	var cmd *exec.Cmd
 	if cCtx.Bool("monitor") {
