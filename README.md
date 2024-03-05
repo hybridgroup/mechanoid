@@ -87,7 +87,7 @@ func ping() {
 func main() {}
 ```
 
-Compile this program to WASM using Mechanoid:
+You can compile this program to WASM using the `mecha build` command:
 
 ```bash
 $ mecha build
@@ -98,93 +98,102 @@ Building module ping
 
 ### Mechanoid host application
 
-This is the Go code for the Mechanoid host application that runs on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the module's `Ping()` function. That `Ping()` function will then call the host's exported `Pong()` function:
+This is the Go code for the Mechanoid host application that runs directly on the hardware. It loads the `ping.wasm` WebAssembly module and then runs it by calling the module's `Ping()` function. That `Ping()` function will then call the host's exported `Pong()` function:
 
 ```go
-import (
-    "bytes"
-    _ "embed"
+package main
 
-    "github.com/hybridgroup/mechanoid"
-    "github.com/hybridgroup/mechanoid/engine"
-    "github.com/hybridgroup/mechanoid/interp/wazero"
-    "github.com/orsinium-labs/wypes"
+import (
+	"bytes"
+	_ "embed"
+	"time"
+
+	"github.com/hybridgroup/mechanoid/engine"
+	"github.com/hybridgroup/mechanoid/interp/wasman"
+	"github.com/orsinium-labs/wypes"
 )
 
-//go:embed ping.wasm
+//go:embed modules/ping.wasm
 var pingModule []byte
 
 func main() {
-    err := run()
-    if err != nil {
-        println(err.Error())
-    }
+	time.Sleep(1 * time.Second)
+
+	println("Mechanoid engine starting...")
+	eng := engine.NewEngine()
+
+	intp := &wasman.Interpreter{}
+
+	println("Using interpreter", intp.Name())
+	eng.UseInterpreter(intp)
+
+	println("Initializing engine...")
+	err := eng.Init()
+	if err != nil {
+		println(err.Error())
+		return
+	}
+
+	println("Defining host function...")
+	modules := wypes.Modules{
+		"hosted": wypes.Module{
+			"pong": wypes.H0(pongFunc),
+		},
+	}
+	if err := eng.Interpreter.SetModules(modules); err != nil {
+		println(err.Error())
+		return
+	}
+
+	println("Loading WASM module...")
+	if err := eng.Interpreter.Load(bytes.NewReader(pingModule)); err != nil {
+		println(err.Error())
+		return
+	}
+
+	println("Running module...")
+	ins, err := eng.Interpreter.Run()
+	if err != nil {
+		println(err.Error())
+		return
+	}
+
+	for {
+		println("Calling ping...")
+		_, _ = ins.Call("ping")
+
+		time.Sleep(1 * time.Second)
+	}
 }
 
-func pong() wypes.Void {
-    println("pong")
-    return wypes.Void{}
-}
-
-func run() error {
-    mechanoid.Log("Mechanoid engine starting...")
-    eng := engine.NewEngine()
-
-    mechanoid.Log("Using interpreter...")
-    interp := wazero.Interpreter{}
-    eng.UseInterpreter(&interp)
-
-    mechanoid.Log("Initializing engine...")
-    err := eng.Init()
-    if err != nil {
-        return err
-    }
-
-    mechanoid.Log("Defining func...")
-    modules := wypes.Modules{
-        "hosted": {
-            "pong":   wypes.H0(pong),
-            "ponger": wypes.H0(pong),
-        },
-    }
-    err = interp.SetModules(modules)
-    if err != nil {
-        return err
-    }
-
-    mechanoid.Log("Loading module...")
-    if err := eng.Interpreter.Load(bytes.NewReader(pingModule)); err != nil {
-        return err
-    }
-
-    mechanoid.Log("Running module...")
-    ins, err := eng.Interpreter.Run()
-    if err != nil {
-        return err
-    }
-
-    mechanoid.Log("Calling ping...")
-    _, err = ins.Call("ping")
-    if err != nil {
-        return err
-    }
-    return nil
+func pongFunc() wypes.Void {
+	println("pong")
+	return wypes.Void{}
 }
 ```
 
-You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with this command:
+You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with the `mecha flash` command:
 
 ```bash
 $ mecha flash -m pybadge
+Building module ping
    code    data     bss |   flash     ram
- 101572    2044    6680 |  103616    8724
+      9       0       0 |       9       0
+Flashing pybadge
+   code    data     bss |   flash     ram
+ 149376   54084    6936 |  203460   61020
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 Mechanoid engine starting...
 Using interpreter wasman
 Initializing engine...
+Initializing interpreter...
+Initializing devices...
 Defining host function...
+Registering host modules...
 Loading WASM module...
 Running module...
+Calling ping...
+pong
 Calling ping...
 pong
 Calling ping...
