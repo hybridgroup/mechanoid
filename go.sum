@@ -6,10 +6,8 @@ github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4 h1:MUh9e2izc
 github.com/orsinium-forks/wazero v0.0.0-20240217173836-b12c024bcbe4/go.mod h1:0U0G41+ochRKoPKCJlh0jMg1CHkyfK8kDqiirMmKY8A=
 github.com/orsinium-labs/tinytest v1.0.0 h1:YiGm/whlGm3mn/ynx9CCFuvEa3Q6yEGrzrKXEqJOkdc=
 github.com/orsinium-labs/tinytest v1.0.0/go.mod h1:GwcYBp0aKi6zujzBXFpCnqw6RSLSp9JSedDyu/V1DF4=
-github.com/orsinium-labs/wypes v0.1.0 h1:WSw47er3Dz2nHzw1D20mt57W2i+Rm0sI6c4uSm1XdKM=
-github.com/orsinium-labs/wypes v0.1.0/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
-github.com/orsinium-labs/wypes v0.1.1 h1:i8J8wDnoJERQoK5JXQomlAYER8MyySgZQPE8hRDvRiM=
-github.com/orsinium-labs/wypes v0.1.1/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
+github.com/orsinium-labs/wypes v0.1.2 h1:xa+d83u6jkGENM2I63KY1dxTC9S/D2At/rB7EsvU5QY=
+github.com/orsinium-labs/wypes v0.1.2/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/urfave/cli/v2 v2.27.1 h1:8xSQ6szndafKVRmfyeUMxkNUJQMjL1F2zmsZ+qHpfho=

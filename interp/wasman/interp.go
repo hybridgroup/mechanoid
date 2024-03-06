@@ -145,8 +145,9 @@ func (i *Interpreter) defineModule(modName string, m wypes.Module, refs wypes.Re
 func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) wasm.RawHostFunc {
 	return func(stack []uint64) []uint64 {
 		adaptedStack := wypes.SliceStack(stack)
+		adaptedMemory := wypes.SliceMemory(i.Memory)
 		store := wypes.Store{
-			Memory:  &memoryReaderWriter{data: i.Memory},
+			Memory:  &adaptedMemory,
 			Stack:   &adaptedStack,
 			Refs:    refs,
 			Context: nil,
@@ -178,23 +179,4 @@ func wrapValueTypes(ins []wypes.ValueType) []types.ValueType {
 		outs = append(outs, types.ValueType(in))
 	}
 	return outs
-}
-
-type memoryReaderWriter struct {
-	data []byte
-}
-
-func (m *memoryReaderWriter) Read(offset, count uint32) ([]byte, bool) {
-	if offset+count > uint32(len(m.data)) {
-		return nil, false
-	}
-	return m.data[offset : offset+count], true
-}
-
-func (m *memoryReaderWriter) Write(offset uint32, v []byte) bool {
-	if offset+uint32(len(v)) > uint32(len(m.data)) {
-		return false
-	}
-	copy(m.data[offset:], v)
-	return true
 }
