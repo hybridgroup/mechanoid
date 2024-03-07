@@ -22,13 +22,13 @@ func flash(cCtx *cli.Context) error {
 
 	targetName := cCtx.Args().First()
 
-	fmt.Println("Flashing", targetName)
+	fmt.Println("Flashing", targetName, "using interpreter", cCtx.String("interpreter"))
 
 	var cmd *exec.Cmd
 	if cCtx.Bool("monitor") {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-target", targetName, "-monitor", ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", cCtx.String("interpreter"), "-target", targetName, "-monitor", ".")
 	} else {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-target", targetName, ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", cCtx.String("interpreter"), "-target", targetName, ".")
 	}
 
 	var stdoutBuf, stderrBuf bytes.Buffer
@@ -36,7 +36,7 @@ func flash(cCtx *cli.Context) error {
 	cmd.Stderr = io.MultiWriter(os.Stderr, &stderrBuf)
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("tinygo flash -size short -stack-size 8kb -target %s .: %v\n", targetName, err)
+		fmt.Printf("%s: %v\n", cmd.String(), err)
 		os.Exit(1)
 	}
 

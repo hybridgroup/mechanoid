@@ -109,7 +109,7 @@ import (
 	"time"
 
 	"github.com/hybridgroup/mechanoid/engine"
-	"github.com/hybridgroup/mechanoid/interp/wasman"
+	"github.com/hybridgroup/mechanoid/interp"
 	"github.com/orsinium-labs/wypes"
 )
 
@@ -122,8 +122,7 @@ func main() {
 	println("Mechanoid engine starting...")
 	eng := engine.NewEngine()
 
-	intp := &wasman.Interpreter{}
-
+	intp := interp.NewInterpreter()
 	println("Using interpreter", intp.Name())
 	eng.UseInterpreter(intp)
 
