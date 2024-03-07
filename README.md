@@ -210,6 +210,11 @@ There are more examples available here:
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 
+## Supported Runtime Interpreters
+
+- [wazero](https://github.com/orsinium-forks/wazero) - requires the https://github.com/orsinium-forks/wazero fork
+- [wasman](https://github.com/hybridgroup/wasman) - requires the https://github.com/hybridgroup/wasman fork
+
 ## Goals
 
 - [X] Able to run small WASM modules designed for specific embedded runtime interfaces.
