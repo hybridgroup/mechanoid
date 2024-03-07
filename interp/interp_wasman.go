@@ -8,5 +8,7 @@ import (
 )
 
 func NewInterpreter() engine.Interpreter {
-	return &wasman.Interpreter{}
+	return &wasman.Interpreter{
+		Memory: make([]byte, 65536),
+	}
 }
