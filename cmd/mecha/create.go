@@ -13,7 +13,7 @@ import (
 
 const (
 	defaultProjectTemplate = "github.com/hybridgroup/mechanoid-templates/projects/simple"
-	defaultModuleTemplate  = "github.com/hybridgroup/mechanoid-templates/modules/hello"
+	defaultModuleTemplate  = "github.com/hybridgroup/mechanoid-templates/modules/ping"
 )
 
 func createProject(cCtx *cli.Context) error {
