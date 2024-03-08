@@ -29,6 +29,4 @@ type Interpreter interface {
 	SetModules(wypes.Modules) error
 	// MemoryData returns a slice of memory data from the memory managed by the host.
 	MemoryData(ptr, sz uint32) ([]byte, error)
-	// References are the external references managed by the host module.
-	References() *ExternalReferences
 }
