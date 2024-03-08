@@ -9,10 +9,14 @@ var _ engine.Device = &I2C{}
 
 type I2CConfig struct{}
 
-type I2C struct{}
+type I2C struct {
+	eng *engine.Engine
+}
 
-func NewI2CDevice() *I2C {
-	return &I2C{}
+func NewI2CDevice(e *engine.Engine) *I2C {
+	return &I2C{
+		eng: e,
+	}
 }
 
 func (I2C) Init() error {

@@ -10,20 +10,20 @@ var _ engine.Device = &SPI{}
 type SPIConfig struct{}
 
 type SPI struct {
-	Engine *engine.Engine
+	eng *engine.Engine
 }
 
 func NewSPIDevice(e *engine.Engine) *SPI {
 	return &SPI{
-		Engine: e,
+		eng: e,
 	}
 }
 
-func (SPI) Init() error {
+func (*SPI) Init() error {
 	return nil
 }
 
-func (SPI) Modules() wypes.Modules {
+func (*SPI) Modules() wypes.Modules {
 	// this is where the host machine's SPI would be initialized
 	// and all the hosted functions setup
 

@@ -21,10 +21,14 @@ type PinConfig struct {
 	Mode PinMode
 }
 
-type GPIO struct{}
+type GPIO struct {
+	eng *engine.Engine
+}
 
-func NewGPIODevice() *GPIO {
-	return &GPIO{}
+func NewGPIODevice(e *engine.Engine) *GPIO {
+	return &GPIO{
+		eng: e,
+	}
 }
 
 func (GPIO) Init() error {

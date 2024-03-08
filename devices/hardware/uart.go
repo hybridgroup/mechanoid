@@ -9,17 +9,21 @@ var _ engine.Device = &UART{}
 
 type UARTConfig struct{}
 
-type UART struct{}
-
-func NewUARTDevice() *UART {
-	return &UART{}
+type UART struct {
+	eng *engine.Engine
 }
 
-func (UART) Init() error {
+func NewUARTDevice(e *engine.Engine) *UART {
+	return &UART{
+		eng: e,
+	}
+}
+
+func (*UART) Init() error {
 	return nil
 }
 
-func (UART) Modules() wypes.Modules {
+func (*UART) Modules() wypes.Modules {
 	// this is where the host machine's UART would be initialized
 	// and all the hosted functions setup
 	return wypes.Modules{
