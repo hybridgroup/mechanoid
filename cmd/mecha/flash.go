@@ -6,7 +6,9 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/urfave/cli/v2"
 )
 
@@ -22,7 +24,11 @@ func flash(cCtx *cli.Context) error {
 
 	targetName := cCtx.Args().First()
 
-	fmt.Println("Flashing", targetName, "using interpreter", cCtx.String("interpreter"))
+	s := spinner.New(spinner.CharSets[17], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s.Suffix = " Building application for " + targetName + " using interpreter " + cCtx.String("interpreter")
+	s.FinalMSG = "Application built. Now flashing...\n"
+	s.Start()
+	defer s.Stop()
 
 	var cmd *exec.Cmd
 	if cCtx.Bool("monitor") {
@@ -32,8 +38,8 @@ func flash(cCtx *cli.Context) error {
 	}
 
 	var stdoutBuf, stderrBuf bytes.Buffer
-	cmd.Stdout = io.MultiWriter(os.Stdout, &stdoutBuf)
-	cmd.Stderr = io.MultiWriter(os.Stderr, &stderrBuf)
+	cmd.Stdout = io.MultiWriter(&spinWriter{s, os.Stdout, false}, &stdoutBuf)
+	cmd.Stderr = io.MultiWriter(&spinWriter{s, os.Stderr, false}, &stderrBuf)
 
 	if err := cmd.Run(); err != nil {
 		fmt.Printf("%s: %v\n", cmd.String(), err)
