@@ -41,7 +41,7 @@ func (i *Interpreter) Load(code engine.Reader) error {
 
 	conf := config.ModuleConfig{
 		Recover: true,
-		Logger:  mechanoid.Log,
+		Logger:  mechanoid.Debug,
 	}
 
 	var err error
