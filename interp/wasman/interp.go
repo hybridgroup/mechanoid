@@ -15,11 +15,10 @@ import (
 )
 
 type Interpreter struct {
-	linker     *wasmaneng.Linker
-	module     *wasmaneng.Module
-	instance   *wasmaneng.Instance
-	Memory     []byte
-	references engine.ExternalReferences
+	linker   *wasmaneng.Linker
+	module   *wasmaneng.Module
+	instance *wasmaneng.Instance
+	Memory   []byte
 }
 
 func (i *Interpreter) Name() string {
@@ -28,20 +27,12 @@ func (i *Interpreter) Name() string {
 
 func (i *Interpreter) Init() error {
 	i.linker = wasmaneng.NewLinker(config.LinkerConfig{})
-
 	// use host pre-allocated memory for instances
 	if i.Memory != nil {
-		if len(i.Memory)%65536 != 0 {
-			return engine.ErrInvalidMemorySize
-		}
-
 		if err := i.linker.DefineMemory("env", "memory", i.Memory); err != nil {
 			return err
 		}
 	}
-
-	i.references = engine.NewReferences()
-
 	return nil
 }
 
@@ -99,12 +90,8 @@ func (i *Interpreter) Halt() error {
 		runtime.ReadMemStats(&ms)
 		mechanoid.Debug("Interpreter Halt - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
-
-	// clean up extern refs
-	i.references.Clear()
 	i.instance = nil
 	i.module = nil
-
 	// force a garbage collection to free memory
 	runtime.GC()
 
@@ -166,11 +153,6 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 	}
 
 	return i.instance.Memory.Value[ptr : ptr+sz], nil
-}
-
-// References are the external references managed by the host module.
-func (i *Interpreter) References() *engine.ExternalReferences {
-	return &i.references
 }
 
 func wrapValueTypes(ins []wypes.ValueType) []types.ValueType {
