@@ -37,12 +37,7 @@ func (i *Interpreter) Init() error {
 }
 
 func (i *Interpreter) Load(code engine.Reader) error {
-	ms := runtime.MemStats{}
-
-	if mechanoid.Debugging {
-		runtime.ReadMemStats(&ms)
-		mechanoid.Debug("Interpreter Load - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
-	}
+	mechanoid.DebugMemory("Interpreter Load")
 
 	conf := config.ModuleConfig{
 		Recover: true,
@@ -59,12 +54,7 @@ func (i *Interpreter) Load(code engine.Reader) error {
 }
 
 func (i *Interpreter) Run() (engine.Instance, error) {
-	ms := runtime.MemStats{}
-
-	if mechanoid.Debugging {
-		runtime.ReadMemStats(&ms)
-		mechanoid.Debug("Interpreter Run - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
-	}
+	mechanoid.DebugMemory("Interpreter Run")
 
 	var err error
 	i.instance, err = i.linker.Instantiate(i.module)
@@ -84,21 +74,14 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 }
 
 func (i *Interpreter) Halt() error {
-	ms := runtime.MemStats{}
+	mechanoid.DebugMemory("Interpreter Halt")
 
-	if mechanoid.Debugging {
-		runtime.ReadMemStats(&ms)
-		mechanoid.Debug("Interpreter Halt - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
-	}
 	i.instance = nil
 	i.module = nil
+
 	// force a garbage collection to free memory
 	runtime.GC()
-
-	if mechanoid.Debugging {
-		runtime.ReadMemStats(&ms)
-		mechanoid.Debug("Interpreter Halt after GC - Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
-	}
+	mechanoid.DebugMemory("Interpreter Halt after GC")
 
 	return nil
 }

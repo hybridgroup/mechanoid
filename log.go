@@ -8,17 +8,17 @@ func Log(msg string) {
 }
 
 // Log a message into terminal if debug mode is enabled
-func Debug(args ...any) {
+func Debug(msg string) {
 	if Debugging {
-		println(args)
+		println(msg)
 	}
 }
 
 // DebugMemory prints memory usage if debug mode is enabled.
-func DebugMemory(args ...any) {
+func DebugMemory(msg string) {
 	if Debugging {
 		ms := runtime.MemStats{}
 		runtime.ReadMemStats(&ms)
-		println(args, "Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
+		println(msg, "Heap Used: ", ms.HeapInuse, " Free: ", ms.HeapIdle, " Meta: ", ms.GCSys)
 	}
 }

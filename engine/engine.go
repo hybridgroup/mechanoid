@@ -45,19 +45,19 @@ func (e *Engine) Init() error {
 		return ErrNoInterpreter
 	}
 
-	mechanoid.Log("Initializing interpreter...")
+	mechanoid.Debug("Initializing interpreter...")
 	if err := e.Interpreter.Init(); err != nil {
 		return fmt.Errorf("init interpreter: %v", err)
 	}
 
 	if e.FileStore != nil {
-		mechanoid.Log("Initializing file store...")
+		mechanoid.Debug("Initializing file store...")
 		if err := e.FileStore.Init(); err != nil {
 			return fmt.Errorf("init file store: %v", err)
 		}
 	}
 
-	mechanoid.Log("Initializing devices...")
+	mechanoid.Debug("Initializing devices...")
 	for _, d := range e.Devices {
 		err := d.Init()
 		if err != nil {
