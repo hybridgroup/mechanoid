@@ -24,7 +24,7 @@ func flash(cCtx *cli.Context) error {
 
 	targetName := cCtx.Args().First()
 
-	s := spinner.New(spinner.CharSets[17], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s := spinner.New(spinner.CharSets[5], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
 	s.Suffix = " Building application for " + targetName + " using interpreter " + cCtx.String("interpreter")
 	s.FinalMSG = "Application built. Now flashing...\n"
 	s.Start()

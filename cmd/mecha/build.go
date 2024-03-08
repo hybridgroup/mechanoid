@@ -50,7 +50,7 @@ func build(cCtx *cli.Context) error {
 }
 
 func buildModule(modulesPath, name string) error {
-	s := spinner.New(spinner.CharSets[17], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s := spinner.New(spinner.CharSets[5], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
 	s.Suffix = " Building module " + name
 	s.FinalMSG = "Done.\n"
 	s.Start()
