@@ -53,7 +53,7 @@ func main() {
 				ArgsUsage: "<board-name>",
 				Flags: []cli.Flag{
 					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
-					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wasman", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
+					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
 					&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
 				},
 			},

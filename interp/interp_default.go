@@ -4,9 +4,9 @@ package interp
 
 import (
 	"github.com/hybridgroup/mechanoid/engine"
-	"github.com/hybridgroup/mechanoid/interp/wasman"
+	"github.com/hybridgroup/mechanoid/interp/wazero"
 )
 
 func NewInterpreter() engine.Interpreter {
-	return &wasman.Interpreter{}
+	return &wazero.Interpreter{}
 }
