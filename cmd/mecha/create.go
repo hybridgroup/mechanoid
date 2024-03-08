@@ -85,6 +85,27 @@ func createFromTemplate(templ, proj string) error {
 		os.Exit(1)
 	}
 
+	// patch the go.mod file to use forked wazero
+	basename := filepath.Base(proj)
+	if err := os.Chdir(basename); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer os.Chdir("..")
+
+	return replaceWazeroWithFork()
+}
+
+func replaceWazeroWithFork() error {
+	var stdout, stderr bytes.Buffer
+	cmd := exec.Command("go", "mod", "edit", "-replace", "github.com/tetratelabs/wazero=github.com/orsinium-forks/wazero@v0.0.0-20240305131633-28fdf656fe85")
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("%s: %v\n%s%s", cmd.String(), err, stderr.Bytes(), stdout.Bytes())
+		os.Exit(1)
+	}
+
 	return nil
 }
 
