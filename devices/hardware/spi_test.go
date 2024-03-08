@@ -2,17 +2,10 @@ package hardware
 
 import (
 	"testing"
-
-	"github.com/hybridgroup/mechanoid/engine"
 )
 
 func TestSPI(t *testing.T) {
-	eng := engine.NewEngine()
-	dev := NewSPIDevice(eng)
-	if dev == nil {
-		t.Errorf("NewSPIDevice() returned nil")
-	}
-
+	dev := SPI{}
 	if dev.Init() != nil {
 		t.Errorf("Init() returned non-nil")
 	}

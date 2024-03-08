@@ -7,21 +7,13 @@ import (
 
 var _ engine.Device = &ADC{}
 
-type ADC struct {
-	eng *engine.Engine
-}
+type ADC struct{}
 
-func NewADCDevice(e *engine.Engine) *ADC {
-	return &ADC{
-		eng: e,
-	}
-}
-
-func (*ADC) Init() error {
+func (ADC) Init() error {
 	return nil
 }
 
-func (*ADC) Modules() wypes.Modules {
+func (ADC) Modules() wypes.Modules {
 	return wypes.Modules{
 		"machine": wypes.Module{
 			"__tinygo_adc_read": wypes.H1(ADCRead),

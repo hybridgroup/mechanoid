@@ -9,21 +9,13 @@ var _ engine.Device = &I2C{}
 
 type I2CConfig struct{}
 
-type I2C struct {
-	eng *engine.Engine
-}
-
-func NewI2CDevice(e *engine.Engine) *I2C {
-	return &I2C{
-		eng: e,
-	}
-}
+type I2C struct{}
 
 func (I2C) Init() error {
 	return nil
 }
 
-func (i2c *I2C) Modules() wypes.Modules {
+func (i2c I2C) Modules() wypes.Modules {
 	// this is where the host machine's I2C would be initialized
 	// and all the hosted functions setup
 

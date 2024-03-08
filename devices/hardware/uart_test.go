@@ -2,17 +2,10 @@ package hardware
 
 import (
 	"testing"
-
-	"github.com/hybridgroup/mechanoid/engine"
 )
 
 func TestUART(t *testing.T) {
-	eng := engine.NewEngine()
-	dev := NewUARTDevice(eng)
-	if dev == nil {
-		t.Errorf("NewUARTDevice() returned nil")
-	}
-
+	dev := UART{}
 	if dev.Init() != nil {
 		t.Errorf("Init() returned non-nil")
 	}

@@ -2,17 +2,10 @@ package hardware
 
 import (
 	"testing"
-
-	"github.com/hybridgroup/mechanoid/engine"
 )
 
 func TestADC(t *testing.T) {
-	eng := engine.NewEngine()
-	dev := NewADCDevice(eng)
-	if dev == nil {
-		t.Errorf("NewADCDevice() returned nil")
-	}
-
+	dev := ADC{}
 	if dev.Init() != nil {
 		t.Errorf("Init() returned non-nil")
 	}

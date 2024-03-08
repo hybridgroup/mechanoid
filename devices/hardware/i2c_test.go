@@ -2,17 +2,10 @@ package hardware
 
 import (
 	"testing"
-
-	"github.com/hybridgroup/mechanoid/engine"
 )
 
 func TestI2C(t *testing.T) {
-	eng := engine.NewEngine()
-	dev := NewI2CDevice(eng)
-	if dev == nil {
-		t.Errorf("NewI2CDevice() returned nil")
-	}
-
+	dev := I2C{}
 	if dev.Init() != nil {
 		t.Errorf("Init() returned non-nil")
 	}
