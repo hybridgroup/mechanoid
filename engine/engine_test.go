@@ -55,7 +55,3 @@ func (i *mockInterpreter) SetModules(wypes.Modules) error {
 func (i *mockInterpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 	return nil, nil
 }
-
-func (i *mockInterpreter) References() *ExternalReferences {
-	return nil
-}
