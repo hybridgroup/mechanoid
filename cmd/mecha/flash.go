@@ -30,11 +30,20 @@ func flash(cCtx *cli.Context) error {
 	s.Start()
 	defer s.Stop()
 
+	intp := cCtx.String("interpreter")
+	if intp == "wasman" {
+		intp = "wasman nowazero"
+	}
+
+	if cCtx.Bool("debug") {
+		intp += " debug"
+	}
+
 	var cmd *exec.Cmd
 	if cCtx.Bool("monitor") {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", cCtx.String("interpreter"), "-target", targetName, "-monitor", ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName, "-monitor", ".")
 	} else {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", cCtx.String("interpreter"), "-target", targetName, ".")
+		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName, ".")
 	}
 
 	var stdoutBuf, stderrBuf bytes.Buffer
