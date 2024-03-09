@@ -1,10 +1,16 @@
 package engine
 
 import (
+	"bytes"
 	"testing"
+
+	_ "embed"
 
 	"github.com/orsinium-labs/wypes"
 )
+
+//go:embed tester.wasm
+var wasmCode []byte
 
 func TestEngine(t *testing.T) {
 	t.Run("cannot init without interpreter", func(t *testing.T) {
@@ -21,6 +27,19 @@ func TestEngine(t *testing.T) {
 		err := e.Init()
 		if err != nil {
 			t.Errorf("Engine.Init() failed: %v", err)
+		}
+	})
+
+	t.Run("can LoadAndRun", func(t *testing.T) {
+		e := NewEngine()
+		e.UseInterpreter(&mockInterpreter{})
+		err := e.Init()
+		if err != nil {
+			t.Errorf("Engine.Init() failed: %v", err)
+		}
+
+		if _, err := e.LoadAndRun(bytes.NewReader(wasmCode)); err != nil {
+			t.Errorf("Engine.LoadAndRun() failed: %v", err)
 		}
 	})
 }
