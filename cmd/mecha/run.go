@@ -13,7 +13,21 @@ import (
 func run(cCtx *cli.Context) error {
 	fmt.Println("Running using interpreter", cCtx.String("interpreter"))
 
-	cmd := exec.Command("go", "run", "-tags", cCtx.String("interpreter"), ".")
+	// build all the modules before running
+	if err := build(cCtx); err != nil {
+		return err
+	}
+
+	intp := cCtx.String("interpreter")
+	if intp == "wasman" {
+		intp = "wasman nowazero"
+	}
+
+	if cCtx.Bool("debug") {
+		intp += " debug"
+	}
+
+	cmd := exec.Command("go", "run", "-tags", intp, ".")
 
 	var stdoutBuf, stderrBuf bytes.Buffer
 	cmd.Stdout = io.MultiWriter(os.Stdout, &stdoutBuf)

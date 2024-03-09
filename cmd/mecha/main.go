@@ -61,7 +61,8 @@ func main() {
 				Usage:  "Run code for Mechanoid project",
 				Action: run,
 				Flags: []cli.Flag{
-					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wasman", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
+					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
+					&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
 				},
 			},
 			{
