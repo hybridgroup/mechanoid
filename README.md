@@ -114,21 +114,17 @@ import (
 )
 
 //go:embed modules/ping.wasm
-var pingModule []byte
+var wasmCode []byte
 
 func main() {
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	println("Mechanoid engine starting...")
 	eng := engine.NewEngine()
+	eng.UseInterpreter(interp.NewInterpreter())
 
-	intp := interp.NewInterpreter()
-	println("Using interpreter", intp.Name())
-	eng.UseInterpreter(intp)
-
-	println("Initializing engine...")
-	err := eng.Init()
-	if err != nil {
+	println("Initializing engine using interpreter", eng.Interpreter.Name())
+	if err := eng.Init(); err != nil {
 		println(err.Error())
 		return
 	}
@@ -144,14 +140,8 @@ func main() {
 		return
 	}
 
-	println("Loading WASM module...")
-	if err := eng.Interpreter.Load(bytes.NewReader(pingModule)); err != nil {
-		println(err.Error())
-		return
-	}
-
-	println("Running module...")
-	ins, err := eng.Interpreter.Run()
+	println("Loading and running WASM code...")
+	ins, err := eng.LoadAndRun(bytes.NewReader(wasmCode))
 	if err != nil {
 		println(err.Error())
 		return
@@ -159,7 +149,9 @@ func main() {
 
 	for {
 		println("Calling ping...")
-		_, _ = ins.Call("ping")
+		if _, err := ins.Call("ping"); err != nil {
+			println(err.Error())
+		}
 
 		time.Sleep(1 * time.Second)
 	}
@@ -174,25 +166,20 @@ func pongFunc() wypes.Void {
 You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with the `mecha flash` command:
 
 ```bash
-$ mecha flash -m pybadge
+$ mecha flash -i wazero -m pybadge
 Building module ping
+Done.
    code    data     bss |   flash     ram
       9       0       0 |       9       0
-Flashing pybadge
+Application built. Now flashing...
    code    data     bss |   flash     ram
- 149376   54084    6936 |  203460   61020
+ 328988   66056    7112 |  395044   73168
+
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 Mechanoid engine starting...
-Using interpreter wasman
-Initializing engine...
-Initializing interpreter...
-Initializing devices...
+Initializing engine using interpreter wazero
 Defining host function...
-Registering host modules...
-Loading WASM module...
-Running module...
-Calling ping...
-pong
+Loading and running WASM code...
 Calling ping...
 pong
 Calling ping...
@@ -219,5 +206,5 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 - [X] Able to run small WASM modules designed for specific embedded runtime interfaces.
 - [X] Hot loading/unloading of WASM modules.
 - [X] Local storage system for WASM modules.
-- [ ] Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others.
-- [ ] Configurable system to allow the bridge interface to host capabilities to be defined per application.
+- [ ] Allow the engine to be used/extended for different embedded application use cases, e.g. CLI, WASM4 runtime, others. - IN PROGRESS
+- [ ] Configurable system to allow the bridge interface to host capabilities to be defined per application. - IN PROGRESS
