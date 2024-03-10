@@ -54,6 +54,10 @@ func main() {
 					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
 					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
 					&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
+					&cli.StringSliceFlag{
+						Name:  "params",
+						Usage: "Pass build-time parameters for the application. Format: -params main.name=value -params main.descript=value2",
+					},
 				},
 			},
 			{

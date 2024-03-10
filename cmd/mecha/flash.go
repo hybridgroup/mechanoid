@@ -39,12 +39,23 @@ func flash(cCtx *cli.Context) error {
 		intp += " debug"
 	}
 
-	var cmd *exec.Cmd
-	if cCtx.Bool("monitor") {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName, "-monitor", ".")
-	} else {
-		cmd = exec.Command("tinygo", "flash", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName, ".")
+	args := []string{"flash", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName}
+
+	if len(cCtx.StringSlice("params")) > 0 {
+		ldlags := ""
+		for _, p := range cCtx.StringSlice("params") {
+			ldlags += " -X " + p
+		}
+		args = append(args, "-ldflags", ldlags)
 	}
+
+	if cCtx.Bool("monitor") {
+		args = append(args, "-monitor")
+	}
+
+	args = append(args, ".")
+
+	var cmd = exec.Command("tinygo", args...)
 
 	var stdoutBuf, stderrBuf bytes.Buffer
 	cmd.Stdout = io.MultiWriter(&spinWriter{s, os.Stdout, false}, &stdoutBuf)
