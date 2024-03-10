@@ -38,6 +38,13 @@ func build(cCtx *cli.Context) error {
 			if !f.IsDir() {
 				continue
 			}
+			// check if there is a go.mod file in the directory
+			_, err = os.Stat(filepath.Join(wd, "modules", f.Name(), "go.mod"))
+			if err != nil {
+				fmt.Println("No Go files to build in", f.Name(), "skipping...")
+				continue
+			}
+
 			if err := buildModule(filepath.Join(wd, "modules"), f.Name()); err != nil {
 				return err
 			}
