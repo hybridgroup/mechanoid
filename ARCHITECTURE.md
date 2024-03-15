@@ -1,66 +1,57 @@
 # Architecture
 
+## Overview
+
 ```mermaid
-flowchart TD
-    subgraph Application
-        App
+flowchart LR
+    subgraph Mechanoid
+        Application<-->Engine
+        Engine<-->Modules
+        Engine<-->Devices
     end
-    App-->Engine
-    subgraph Modules
-        WASM1
-        WASM2
-    end
-    subgraph Engine
-        FileStore
-        Interpreter
-        Devices
-    end
-    FileStore-->Modules
-    Interpreter-->Modules
-    Interpreter-->Devices
-    Devices--->Machine
-    Devices--->Hardware
-    Devices--->Network
-    subgraph Hardware
-        Sensor
-        Displayer
-        LEDSetter
-    end
-    subgraph Network
-        Net
-        Bluetooth
-    end
-    subgraph Machine
-        GPIO
-        ADC
-        I2C
-        SPI
-    end
-    Displayer-->SPI
-    Sensor-->GPIO
-    Sensor-->I2C
 ```
 
-## Application
+### Application
 
 The host application that the developer who uses Mechanoid is creating.
 
-## Modules
+### Modules
 
 The WASM modules that developers who are creating code for this Application are writing.
 
-## Engine
+### Devices
 
-The capabilities that the Application uses/exposes for Modules.
+Specific hardware devices such as displays or sensors that can be used by the Application and/or Modules. This can also include connections to networking devices such as WiFi or Bluetooth, and low-level hardware interfaces such as GPIO or I2C.
 
-## Devices
+## Mechanoid Engine
 
-Wrappers around specific devices such as displays or sensors that can be used by the Application and/or Modules.
+```mermaid
+flowchart LR
+    subgraph Application
+        App
+    end
+    subgraph Engine
+        Interpreter<-->Modules
+        FileStore<-->Modules
+    end
+    subgraph Modules
+        program1.wasm
+        program2.wasm
+    end
+    subgraph Devices
+        Display
+        Network
+        Sensors
+    end
+    Application<-->Engine
+    Modules<-->Devices
+```
 
-## Network
+### Interpreter
 
-Wrappers around specific networking capabilities such as WiFi or Bluetooth that can be used by the Application and/or Modules.
+The Interpreter is an interface to whichever WebAssembly interpreter is to be used for this application. The default interpreter for Mechanoid is [Wazero](https://github.com/tetratelabs/wazero).
 
-## Machine
+### FileStore
 
-Wrappers around low-level hardware interfaces such as GPIO or I2C that can be used by the Application and/or Modules.
+The FileStore is an interface to where the modules for this application can be stored, so that they can be dynamically loaded. Currently supports flash memory using the [LittleFS](https://github.com/littlefs-project/littlefs) file system.
+
