@@ -22,12 +22,6 @@ Mechanoid includes a command line interface tool that helps you create, test, an
 
 - Install the [Mechanoid command line tool](./cmd/mecha/README.md)
 
-	Use `export GOPRIVATE` (only needed until the repo is public)
-
-    ```bash
-	export GOPRIVATE=github.com/hybridgroup/mecha*
-    ```
-
 	Use `go install` to install the `mecha` CLI
 
     ```bash

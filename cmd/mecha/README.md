@@ -16,12 +16,6 @@ In addition you need to install the `gonew` command:
 go install golang.org/x/tools/cmd/gonew@latest
 ```
 
-Use `export GOPRIVATE` (only needed until the repo is public)
-
-```bash
-export GOPRIVATE=github.com/hybridgroup/mecha*
-```
-
 You can then install `mecha`:
 
 ```bash
