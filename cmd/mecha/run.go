@@ -14,7 +14,7 @@ func run(cCtx *cli.Context) error {
 	fmt.Println("Running using interpreter", cCtx.String("interpreter"))
 
 	// build all the modules before running
-	if err := build(cCtx); err != nil {
+	if err := buildModules(cCtx); err != nil {
 		return err
 	}
 

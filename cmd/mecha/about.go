@@ -22,6 +22,7 @@ var logo = `
 
 func about(cCtx *cli.Context) error {
 	fmt.Println(logo)
+	fmt.Println("Version:", Version())
 
 	return nil
 }

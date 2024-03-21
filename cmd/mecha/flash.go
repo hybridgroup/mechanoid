@@ -18,7 +18,7 @@ func flash(cCtx *cli.Context) error {
 	}
 
 	// build all the modules before flashing the hardware
-	if err := build(cCtx); err != nil {
+	if err := buildModules(cCtx); err != nil {
 		return err
 	}
 
