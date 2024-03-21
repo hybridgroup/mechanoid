@@ -7,9 +7,20 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var templateFlags = []cli.Flag{
-	&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for module creation"},
-}
+var (
+	templateFlags = []cli.Flag{
+		&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for module creation"},
+	}
+
+	buildFlags = []cli.Flag{
+		&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
+		&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
+		&cli.StringSliceFlag{
+			Name:  "params",
+			Usage: "Pass build-time parameters for the application or modules. Format: -params main.name=value -params main.descript=value2",
+		},
+	}
+)
 
 func main() {
 	app := &cli.App{
@@ -42,32 +53,39 @@ func main() {
 			},
 			{
 				Name:   "build",
-				Usage:  "Build binary files for Mechanoid project",
-				Action: build,
+				Usage:  "Build binary files for Mechanoid project and/or modules",
+				ArgsUsage: "<project|modules>",
+				Flags:  buildFlags,
+				Action: buildModules,
+				Subcommands: []*cli.Command{
+					{
+						Name:      "project",
+						Usage:     "Build current Mechanoid project",
+						Action:    buildProject,
+						Flags:     buildFlags,
+					},
+					{
+						Name:      "modules",
+						Usage:     "Build current Mechanoid modules",
+						Action:    buildModules,
+						Flags:     buildFlags,
+					},
+				},
 			},
 			{
 				Name:      "flash",
 				Usage:     "Flash Mechanoid project to hardware",
 				Action:    flash,
 				ArgsUsage: "<board-name>",
-				Flags: []cli.Flag{
+				Flags: append(buildFlags,
 					&cli.BoolFlag{Name: "monitor", Aliases: []string{"m"}, Usage: "monitor the serial port after flashing"},
-					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
-					&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
-					&cli.StringSliceFlag{
-						Name:  "params",
-						Usage: "Pass build-time parameters for the application. Format: -params main.name=value -params main.descript=value2",
-					},
-				},
+				),
 			},
 			{
 				Name:   "run",
 				Usage:  "Run code for Mechanoid project",
 				Action: run,
-				Flags: []cli.Flag{
-					&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wazero", Usage: "WebAssembly interpreter to use (wasman, wazero)"},
-					&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
-				},
+				Flags: buildFlags,
 			},
 			{
 				Name:   "test",
