@@ -33,11 +33,11 @@ USAGE:
    mecha [global options] command [command options] 
 
 VERSION:
-   0.0.1-dev
+   0.2.0-dev
 
 COMMANDS:
    new      Create new Mechanoid project or module
-   build    Build binary files for Mechanoid project
+   build    Build binary files for Mechanoid project and/or modules
    flash    Flash Mechanoid project to hardware
    run      Run code for Mechanoid project
    test     Run tests for Mechanoid project
@@ -55,7 +55,6 @@ GLOBAL OPTIONS:
 ```bash
 mecha new project example.com/myproject
 ```
-
 
 ## New project based on template
 
@@ -75,4 +74,22 @@ mecha new module mymodule
 ```bash
 mecha new module -t=blink mymodule
 
+```
+
+## Build modules in current project
+
+```bash
+mecha build
+```
+
+or
+
+```bash
+mecha build modules
+```
+
+## Build application for current project
+
+```bash
+mecha build project
 ```
