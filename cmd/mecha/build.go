@@ -43,7 +43,7 @@ func buildProject(cCtx *cli.Context) error {
 		intp += " debug"
 	}
 
-	args := []string{"build", "-o", projectname+".uf2", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName}
+	args := []string{"build", "-o", projectname + ".uf2", "-size", "short", "-stack-size", "8kb", "-tags", intp, "-target", targetName}
 
 	if len(cCtx.StringSlice("params")) > 0 {
 		ldlags := ""
@@ -95,28 +95,38 @@ func buildModules(cCtx *cli.Context) error {
 			}
 			// check if there is a go.mod file in the directory
 			_, err = os.Stat(filepath.Join(wd, "modules", f.Name(), "go.mod"))
-			if err != nil {
-				fmt.Println("No Go files to build in", f.Name(), "skipping...")
+			if err == nil {
+				if err := buildGoModule(filepath.Join(wd, "modules"), f.Name()); err != nil {
+					return err
+				}
 				continue
 			}
 
-			if err := buildModule(filepath.Join(wd, "modules"), f.Name()); err != nil {
-				return err
+			// check if there is a Cargo.toml file in the directory
+			_, err = os.Stat(filepath.Join(wd, "modules", f.Name(), "Cargo.toml"))
+			if err == nil {
+				if err := buildRustModule(filepath.Join(wd, "modules"), f.Name()); err != nil {
+					return err
+				}
+				continue
 			}
+
+			// no go.mod or Cargo.toml file found
+			fmt.Println("No module files found in", f.Name(), "skipping...")
 		}
 	}
 
 	return nil
 }
 
-func buildModule(modulesPath, name string) error {
+func buildGoModule(modulesPath, name string) error {
 	s := spinner.New(spinner.CharSets[5], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
-	s.Suffix = " Building module " + name
+	s.Suffix = " Building TinyGo module " + name
 	s.FinalMSG = "Done.\n"
 	s.Start()
 	defer s.Stop()
 
-	fmt.Println("Building module", name)
+	fmt.Println("Building TinyGo module", name)
 	modulePath := filepath.Join(modulesPath, name)
 	os.Chdir(modulePath)
 	defer os.Chdir("../..")
@@ -133,4 +143,77 @@ func buildModule(modulesPath, name string) error {
 	}
 
 	return nil
+}
+
+func buildRustModule(modulesPath, name string) error {
+	s := spinner.New(spinner.CharSets[5], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s.Suffix = " Building Rust module " + name
+	s.FinalMSG = "Done.\n"
+	s.Start()
+	defer s.Stop()
+
+	fmt.Println("Building Rust module", name)
+	modulePath := filepath.Join(modulesPath, name)
+	os.Chdir(modulePath)
+	defer os.Chdir("../..")
+
+	cmd := exec.Command("cargo", "build", "--target", "wasm32-unknown-unknown", "--release")
+
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stdout = io.MultiWriter(&spinWriter{s, os.Stdout, false}, &stdoutBuf)
+	cmd.Stderr = io.MultiWriter(&spinWriter{s, os.Stderr, false}, &stderrBuf)
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("cargo build error %s: %v\n", modulePath, err)
+		os.Exit(1)
+	}
+
+	if err := copyFile(filepath.Join(modulePath, "target", "wasm32-unknown-unknown", "release", name+".wasm"), filepath.Join(modulesPath, name+".wasm")); err != nil {
+		fmt.Printf("copy file error %s: %v\n", modulePath, err)
+		os.Exit(1)
+	}
+
+	return nil
+}
+
+// copyFile copies the given file or directory from src to dst. It can copy over
+// a possibly already existing file (but not directory) at the destination.
+func copyFile(src, dst string) error {
+	source, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	st, err := source.Stat()
+	if err != nil {
+		return err
+	}
+
+	if st.IsDir() {
+		err := os.Mkdir(dst, st.Mode().Perm())
+		if err != nil {
+			return err
+		}
+		names, err := source.Readdirnames(0)
+		if err != nil {
+			return err
+		}
+		for _, name := range names {
+			err := copyFile(filepath.Join(src, name), filepath.Join(dst, name))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	} else {
+		destination, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, st.Mode())
+		if err != nil {
+			return err
+		}
+		defer destination.Close()
+
+		_, err = io.Copy(destination, source)
+		return err
+	}
 }
