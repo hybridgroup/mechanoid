@@ -200,7 +200,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 
 ## Supported Runtime Interpreters
 
-- [wazero](https://github.com/orsinium-forks/wazero) - requires the https://github.com/orsinium-forks/wazero fork
+- [wazero](https://github.com/tetratelabs/wazero)
 - [wasman](https://github.com/hybridgroup/wasman) - requires the https://github.com/hybridgroup/wasman fork
 
 ## Goals
