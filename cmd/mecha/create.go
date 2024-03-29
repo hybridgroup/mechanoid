@@ -98,7 +98,7 @@ func createFromTemplate(templ, proj string) error {
 
 func replaceWazeroWithFork() error {
 	var stdout, stderr bytes.Buffer
-	cmd := exec.Command("go", "mod", "edit", "-replace", "github.com/tetratelabs/wazero=github.com/orsinium-forks/wazero@v0.0.0-20240305131633-28fdf656fe85")
+	cmd := exec.Command("go", "mod", "edit", "-replace", "github.com/tetratelabs/wazero=github.com/hybridgroup/wazero@v0.0.0-20240328190114-79d4bea3ca005")
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
