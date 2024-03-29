@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
 	"github.com/orsinium-labs/wypes"
 	"github.com/tetratelabs/wazero"
@@ -23,6 +24,8 @@ func (i *Interpreter) Name() string {
 }
 
 func (i *Interpreter) Init() error {
+	mechanoid.DebugMemory("Interpreter Init")
+
 	ctx := context.Background()
 	conf := wazero.NewRuntimeConfigInterpreter()
 	conf = conf.WithDebugInfoEnabled(false)
@@ -32,6 +35,8 @@ func (i *Interpreter) Init() error {
 }
 
 func (i *Interpreter) SetModules(modules wypes.Modules) error {
+	mechanoid.Log("Registering host modules...")
+
 	if i.modules == nil {
 		i.modules = modules
 		return nil
@@ -50,6 +55,8 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 }
 
 func (i *Interpreter) Load(code engine.Reader) error {
+	mechanoid.DebugMemory("Interpreter Load")
+
 	err := i.defineModules()
 	if err != nil {
 		return fmt.Errorf("register wazero host modules: %v", err)
@@ -115,6 +122,8 @@ func wazeroAdaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) api.GoModuleFunctio
 }
 
 func (i *Interpreter) Run() (engine.Instance, error) {
+	mechanoid.DebugMemory("Interpreter Run")
+
 	var err error
 	ctx := context.Background()
 	init := i.module.ExportedFunction("_initialize")
@@ -128,9 +137,13 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 }
 
 func (i *Interpreter) Halt() error {
+	mechanoid.DebugMemory("Interpreter Halt")
+
 	ctx := context.Background()
-	err := i.runtime.Close(ctx)
-	i.runtime = nil
+	err := i.module.Close(ctx)
+	i.module = nil
+	clear(i.modules)
+
 	return err
 }
 
