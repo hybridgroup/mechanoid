@@ -2,6 +2,8 @@ module github.com/hybridgroup/mechanoid
 
 go 1.22.0
 
+replace github.com/tetratelabs/wazero => github.com/hybridgroup/wazero v0.0.0-20240328190114-79d4bea3ca00
+
 require (
 	github.com/hybridgroup/wasman v0.0.0-20240304140329-ce1ea6b61834
 	github.com/orsinium-labs/wypes v0.1.4
