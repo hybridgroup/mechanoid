@@ -93,7 +93,7 @@ func createFromTemplate(templ, proj string) error {
 	}
 	defer os.Chdir("..")
 
-	return replaceWazeroWithFork()
+	return nil // TODO: completely remove replaceWazeroWithFork()
 }
 
 func replaceWazeroWithFork() error {
