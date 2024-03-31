@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"runtime"
 
 	"github.com/hybridgroup/mechanoid"
 	"github.com/hybridgroup/mechanoid/engine"
@@ -24,6 +25,10 @@ func (i *Interpreter) Name() string {
 }
 
 func (i *Interpreter) Init() error {
+	return i.init()
+}
+
+func (i *Interpreter) init() error {
 	mechanoid.DebugMemory("Interpreter Init")
 
 	ctx := context.Background()
@@ -55,6 +60,12 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 }
 
 func (i *Interpreter) Load(code engine.Reader) error {
+	if i.runtime == nil {
+		if err := i.init(); err != nil {
+			return fmt.Errorf("init wazero runtime: %v", err)
+		}
+	}
+
 	mechanoid.DebugMemory("Interpreter Load")
 
 	err := i.defineModules()
@@ -140,9 +151,13 @@ func (i *Interpreter) Halt() error {
 	mechanoid.DebugMemory("Interpreter Halt")
 
 	ctx := context.Background()
-	err := i.module.Close(ctx)
+	err := i.runtime.Close(ctx)
+	i.runtime = nil
 	i.module = nil
-	clear(i.modules)
+
+	// force a garbage collection to free memory
+	runtime.GC()
+	mechanoid.DebugMemory("Interpreter Halt after GC")
 
 	return err
 }
