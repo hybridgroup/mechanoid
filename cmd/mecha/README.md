@@ -69,10 +69,24 @@ mecha new module mymodule
 
 ```
 
-### New module based on template
+### New TinyGo WASM module based on template
 
 ```bash
 mecha new module -t=blink mymodule
+
+```
+
+### New Rust WASM module based on template
+
+```bash
+mecha new module -t=pingrs -type=rust pingrs
+
+```
+
+## New Zig WASM module based on template
+
+```bash
+mecha new module -t=pingzig -type=zig pingzig
 
 ```
 
