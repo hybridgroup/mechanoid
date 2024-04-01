@@ -50,33 +50,33 @@ GLOBAL OPTIONS:
    --version, -v  print the version
 ```
 
-## New project
+### New project
 
 ```bash
 mecha new project example.com/myproject
 ```
 
-## New project based on template
+### New project based on template
 
 ```bash
 mecha new project -t=blink example.com/myproject
 ```
 
-## New module
+### New module
 
 ```bash
 mecha new module mymodule
 
 ```
 
-## New module based on template
+### New module based on template
 
 ```bash
 mecha new module -t=blink mymodule
 
 ```
 
-## Build modules in current project
+### Build modules in current project
 
 ```bash
 mecha build
@@ -88,8 +88,27 @@ or
 mecha build modules
 ```
 
-## Build application for current project
+### Build application for current project
 
 ```bash
 mecha build project
 ```
+
+## Using `mecha` with Rust
+
+If you want to use the `mecha` command with Rust, you will need to install Rust as follows.
+
+- First install Rust by using the instructions here: https://www.rust-lang.org/tools/install
+
+- Then, install the Rust `wasm32-unknown-unknown` target.
+
+```bash
+rustup target add wasm32-unknown-unknown
+```
+Any Rust modules in your project's `modules` directory should be automatically built when you run the `mecha build` command.
+
+## Using `mecha` with Zig
+
+If you want to use the `mecha` command with Zig, you will need to install Zig 0.11.0 by using the instructions here: https://ziglang.org/learn/getting-started/#installing-zig
+
+Any Zig modules in your project's `modules` directory should be automatically built when you run the `mecha build` command.

@@ -111,6 +111,15 @@ func buildModules(cCtx *cli.Context) error {
 				continue
 			}
 
+			// check if there is a build.zig file in the directory
+			_, err = os.Stat(filepath.Join(wd, "modules", f.Name(), "build.zig"))
+			if err == nil {
+				if err := buildZigModule(filepath.Join(wd, "modules"), f.Name()); err != nil {
+					return err
+				}
+				continue
+			}
+
 			// no go.mod or Cargo.toml file found
 			fmt.Println("No module files found in", f.Name(), "skipping...")
 		}
@@ -169,6 +178,37 @@ func buildRustModule(modulesPath, name string) error {
 	}
 
 	if err := copyFile(filepath.Join(modulePath, "target", "wasm32-unknown-unknown", "release", name+".wasm"), filepath.Join(modulesPath, name+".wasm")); err != nil {
+		fmt.Printf("copy file error %s: %v\n", modulePath, err)
+		os.Exit(1)
+	}
+
+	return nil
+}
+
+func buildZigModule(modulesPath, name string) error {
+	s := spinner.New(spinner.CharSets[5], 100*time.Millisecond, spinner.WithWriter(os.Stdout))
+	s.Suffix = " Building Zig module " + name
+	s.FinalMSG = "Done.\n"
+	s.Start()
+	defer s.Stop()
+
+	fmt.Println("Building Zig module", name)
+	modulePath := filepath.Join(modulesPath, name)
+	os.Chdir(modulePath)
+	defer os.Chdir("../..")
+
+	cmd := exec.Command("zig", "build")
+
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stdout = io.MultiWriter(&spinWriter{s, os.Stdout, false}, &stdoutBuf)
+	cmd.Stderr = io.MultiWriter(&spinWriter{s, os.Stderr, false}, &stderrBuf)
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("zig build error %s: %v\n", modulePath, err)
+		os.Exit(1)
+	}
+
+	if err := copyFile(filepath.Join(modulePath, "zig-out", "lib", name+".wasm"), filepath.Join(modulesPath, name+".wasm")); err != nil {
 		fmt.Printf("copy file error %s: %v\n", modulePath, err)
 		os.Exit(1)
 	}
