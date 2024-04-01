@@ -10,6 +10,7 @@ import (
 var (
 	templateFlags = []cli.Flag{
 		&cli.StringFlag{Name: "template", Aliases: []string{"t"}, Usage: "template to use for module creation"},
+		&cli.StringFlag{Name: "type", Value: "tinygo", Usage: "template type [tinygo, rust, zig]"},
 	}
 
 	buildFlags = []cli.Flag{
@@ -52,23 +53,23 @@ func main() {
 				},
 			},
 			{
-				Name:   "build",
-				Usage:  "Build binary files for Mechanoid project and/or modules",
+				Name:      "build",
+				Usage:     "Build binary files for Mechanoid project and/or modules",
 				ArgsUsage: "<project|modules>",
-				Flags:  buildFlags,
-				Action: buildModules,
+				Flags:     buildFlags,
+				Action:    buildModules,
 				Subcommands: []*cli.Command{
 					{
-						Name:      "project",
-						Usage:     "Build current Mechanoid project",
-						Action:    buildProject,
-						Flags:     buildFlags,
+						Name:   "project",
+						Usage:  "Build current Mechanoid project",
+						Action: buildProject,
+						Flags:  buildFlags,
 					},
 					{
-						Name:      "modules",
-						Usage:     "Build current Mechanoid modules",
-						Action:    buildModules,
-						Flags:     buildFlags,
+						Name:   "modules",
+						Usage:  "Build current Mechanoid modules",
+						Action: buildModules,
+						Flags:  buildFlags,
 					},
 				},
 			},
@@ -85,7 +86,7 @@ func main() {
 				Name:   "run",
 				Usage:  "Run code for Mechanoid project",
 				Action: run,
-				Flags: buildFlags,
+				Flags:  buildFlags,
 			},
 			{
 				Name:   "test",

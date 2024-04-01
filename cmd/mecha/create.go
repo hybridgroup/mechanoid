@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
+	getter "github.com/hashicorp/go-getter"
 	"github.com/urfave/cli/v2"
 )
 
@@ -61,6 +63,17 @@ func createModule(cCtx *cli.Context) error {
 	os.Chdir("modules")
 	defer os.Chdir("..")
 
+	tmpltype := cCtx.String("type")
+	switch {
+	case tmpltype == "rust":
+		return downloadFromTemplate(templateName, name)
+	case tmpltype == "zig":
+		return downloadFromTemplate(templateName, name)
+	case tmpltype == "tinygo":
+	default:
+		return fmt.Errorf("unknown template type %s", tmpltype)
+	}
+
 	if err := createFromTemplate(templateName, name); err != nil {
 		return err
 	}
@@ -85,27 +98,6 @@ func createFromTemplate(templ, proj string) error {
 		os.Exit(1)
 	}
 
-	// patch the go.mod file to use forked wazero
-	basename := filepath.Base(proj)
-	if err := os.Chdir(basename); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer os.Chdir("..")
-
-	return nil // TODO: completely remove replaceWazeroWithFork()
-}
-
-func replaceWazeroWithFork() error {
-	var stdout, stderr bytes.Buffer
-	cmd := exec.Command("go", "mod", "edit", "-replace", "github.com/tetratelabs/wazero=github.com/hybridgroup/wazero@v0.0.0-20240328190114-79d4bea3ca005")
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("%s: %v\n%s%s", cmd.String(), err, stderr.Bytes(), stdout.Bytes())
-		os.Exit(1)
-	}
-
 	return nil
 }
 
@@ -121,4 +113,29 @@ func getModuleName() (string, error) {
 	}
 
 	return strings.TrimSuffix(stdout.String(), "\n"), nil
+}
+
+func downloadFromTemplate(templateName, name string) error {
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error getting pwd: %s", err)
+		return err
+	}
+
+	opts := []getter.ClientOption{}
+	client := &getter.Client{
+		Ctx:     context.Background(),
+		Src:     templateName,
+		Dst:     filepath.Base(name),
+		Pwd:     pwd,
+		Mode:    getter.ClientModeDir,
+		Options: opts,
+	}
+
+	if err := client.Get(); err != nil {
+		fmt.Printf("Error downloading template: %s", err)
+		return err
+	}
+
+	return nil
 }
