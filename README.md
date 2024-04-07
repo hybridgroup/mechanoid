@@ -6,17 +6,19 @@ Mechanoid is a framework for WebAssembly applications on embedded systems and Io
 
 Mechanoid is an open source framework for building and running WebAssembly applications on small embedded systems and tiny IoT devices. It is intended to make it easier to create applications that are secure and extendable, and take advantage of all of the latest developments in both WebAssembly and embedded development.
 
-Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware, in part thanks to being written using [Go](https://go.dev/) and [TinyGo](https://tinygo.org/).
+Mechanoid includes a command line interface tool that helps you create, test, and run applications on either simulators or actual hardware.
 
-## Why would you want to do this?
+You can write WASM modules for Mechanoid using any language that can compile to WebAssembly, including [TinyGo](https://tinygo.org/), [Rust](https://www.rust-lang.org/), and [Zig](https://ziglang.org/).
 
-- Devices that are extensible. Think app stores, downloadable add-ons, or end-user programmability.
-- Environment is sandboxed, so bricking the device is less likely.
-- Code you write being compiled to WASM is very compact.
-- Devices that need a reliable way to update them.
-- OTA updates via slow/high latency are more viable.
-- Specific APIs can be provided by the host application to guest modules, so application-specific code matches the kind of code you are trying to write. Games, industrial control systems.
-- Develop code in Go/Rust/Zig or any language that can compile to WASM, and run it on the same hardware, using the same APIs.
+Mechanoid itself is written using [Go](https://go.dev/) and [TinyGo](https://tinygo.org/).
+
+## Why run WebAssembly on embedded devices?
+
+- Hardware devices that are extensible. Think app stores, downloadable add-ons, or end-user programming.
+- WASM runtime environment is sandboxed for better device security.
+- All devices need updates. By only updating the WASM code "bricking" the device is less likely. Also WASM code is compact, so is well suited for slow/high latency connections.
+- Device code that is portable. Develop code in Go/Rust/Zig or any language that can compile to WASM.
+- Application specific APIs for hardware. From games, to industrial control systems.
 
 ## Getting started
 
@@ -34,7 +36,8 @@ Mechanoid includes a command line interface tool that helps you create, test, an
     mecha new example.com/myproject
     ```
 
-- Make something amazing!
+- Make something amazing! Take a look at our examples repo at <https://github.com/hybridgroup/mechanoid-examples>
+
 
 ## Example
 
@@ -74,8 +77,6 @@ mecha new module -template=ping ping
 This is the Go code for the `ping.wasm` module. It exports a `ping` function, that calls a function `pong` that has been imported from the host application.
 
 ```go
-//go:build tinygo
-
 package main
 
 //go:wasmimport hosted pong
@@ -97,6 +98,10 @@ Building module ping
    code    data     bss |   flash     ram
       9       0       0 |       9       0
 ```
+
+Want to see the same `ping` module but written in Rust? See our examples repo here <https://github.com/hybridgroup/mechanoid-examples/tree/main/filestore/modules/pingrs>
+
+Want to see the same `ping` module but written in Zig? See our examples repo here <https://github.com/hybridgroup/mechanoid-examples/tree/main/filestore/modules/pingzig>
 
 ### Mechanoid host application
 
