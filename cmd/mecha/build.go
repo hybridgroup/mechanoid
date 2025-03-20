@@ -208,7 +208,7 @@ func buildZigModule(modulesPath, name string) error {
 		os.Exit(1)
 	}
 
-	if err := copyFile(filepath.Join(modulePath, "zig-out", "lib", name+".wasm"), filepath.Join(modulesPath, name+".wasm")); err != nil {
+	if err := copyFile(filepath.Join(modulePath, "zig-out", "bin", name+".wasm"), filepath.Join(modulesPath, name+".wasm")); err != nil {
 		fmt.Printf("copy file error %s: %v\n", modulePath, err)
 		os.Exit(1)
 	}
