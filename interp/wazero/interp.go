@@ -128,7 +128,7 @@ func wazeroAdaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) api.GoModuleFunctio
 			Refs:    refs,
 			Context: ctx,
 		}
-		hf.Call(store)
+		hf.Call(&store)
 	})
 }
 

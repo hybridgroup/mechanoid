@@ -122,7 +122,7 @@ func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) wasm.Raw
 			Refs:    refs,
 			Context: nil,
 		}
-		hf.Call(store)
+		hf.Call(&store)
 		return stack
 	}
 }

@@ -2,9 +2,9 @@ github.com/hybridgroup/wasman v0.0.0-20240304140329-ce1ea6b61834 h1:pP916/7OLrom
 github.com/hybridgroup/wasman v0.0.0-20240304140329-ce1ea6b61834/go.mod h1:rLavUo4P0xVcDeDnViYEpPQPoACmp1py9UTLPY/R7Lg=
 github.com/orsinium-labs/tinytest v1.0.0 h1:YiGm/whlGm3mn/ynx9CCFuvEa3Q6yEGrzrKXEqJOkdc=
 github.com/orsinium-labs/tinytest v1.0.0/go.mod h1:GwcYBp0aKi6zujzBXFpCnqw6RSLSp9JSedDyu/V1DF4=
-github.com/orsinium-labs/wypes v0.1.4 h1:+7oih2IDlEpz7laiL3sQFlIU8vjd5j/SwcYlPdIPc0Q=
-github.com/orsinium-labs/wypes v0.1.4/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
-github.com/tetratelabs/wazero v1.7.1-0.20240331091131-22e386151092 h1:Yfu1ffUxZBN07aD9qvVZmZEakyNQAal6vWBF0cB/UUU=
-github.com/tetratelabs/wazero v1.7.1-0.20240331091131-22e386151092/go.mod h1:ytl6Zuh20R/eROuyDaGPkp82O9C/DJfXAwJfQ3X6/7Y=
-tinygo.org/x/tinyfs v0.3.1-0.20231212053859-32ae3f6bbad9 h1:u3w9x/Jo4A5Q+WxABVd15dD2ScTI7B6DmGb3lTKNP/w=
-tinygo.org/x/tinyfs v0.3.1-0.20231212053859-32ae3f6bbad9/go.mod h1:smxJYYJRbfvbQofdYoECIBPHQZJTKd4YeS3ZLvx+lpQ=
+github.com/orsinium-labs/wypes v0.3.2 h1:CwCxfjjPxdLivPk7pg4d1yOnc9tnjeWcZvyYxG35d5M=
+github.com/orsinium-labs/wypes v0.3.2/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
+github.com/tetratelabs/wazero v1.9.0 h1:IcZ56OuxrtaEz8UYNRHBrUa9bYeX9oVY93KspZZBf/I=
+github.com/tetratelabs/wazero v1.9.0/go.mod h1:TSbcXCfFP0L2FGkRPxHphadXPjo1T6W+CseNNY7EkjM=
+tinygo.org/x/tinyfs v0.5.0 h1:1nLSvtvvoNcK3Ii+Dib9MVe4y/Fnp2iMgzbKgADGfbs=
+tinygo.org/x/tinyfs v0.5.0/go.mod h1:45hZCJ5e4rJxc3BaJTy1qhe5N+LbF/CpuFS4jPhhYuo=
