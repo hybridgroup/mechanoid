@@ -86,8 +86,6 @@ func pong()
 func ping() {
  pong()
 }
-
-func main() {}
 ```
 
 You can compile this program to WASM using the `mecha build` command:
@@ -205,8 +203,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 
 ## Supported Runtime Interpreters
 
-- [wazero](https://github.com/tetratelabs/wazero)
-- [wasman](https://github.com/hybridgroup/wasman) - requires the https://github.com/hybridgroup/wasman fork
+- [wasman](https://github.com/hybridgroup/wasman)
+- [wazero](https://github.com/tetratelabs/wazero) - at the moment, not functional due to upstream changes.
 
 ## Goals
 
