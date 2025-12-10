@@ -1,4 +1,4 @@
-//go:build !(wasman || wazero)
+//go:build !(wasman || wazero || epsilon)
 
 package interp
 

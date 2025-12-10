@@ -19,9 +19,7 @@ func run(cCtx *cli.Context) error {
 	}
 
 	intp := cCtx.String("interpreter")
-	if intp == "wasman" {
-		intp = "wasman nowazero"
-	}
+	intp += " nowazero"
 
 	if cCtx.Bool("debug") {
 		intp += " debug"

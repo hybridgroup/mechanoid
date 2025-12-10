@@ -35,9 +35,7 @@ func buildProject(cCtx *cli.Context) error {
 	defer s.Stop()
 
 	intp := cCtx.String("interpreter")
-	if intp == "wasman" {
-		intp = "wasman nowazero"
-	}
+	intp += " nowazero"
 
 	if cCtx.Bool("debug") {
 		intp += " debug"

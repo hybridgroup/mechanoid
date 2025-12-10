@@ -1,8 +1,6 @@
 module github.com/hybridgroup/mechanoid
 
-go 1.22.1
-
-toolchain go1.24.1
+go 1.25.1
 
 require (
 	github.com/hybridgroup/wasman v0.0.0-20240304140329-ce1ea6b61834
@@ -10,3 +8,5 @@ require (
 	github.com/tetratelabs/wazero v1.9.0
 	tinygo.org/x/tinyfs v0.5.0
 )
+
+require github.com/ziggy42/epsilon v0.0.2-0.20251210002722-1c0f18b8b8c6
