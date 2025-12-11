@@ -12,46 +12,67 @@ import (
 	epsilonlib "github.com/ziggy42/epsilon/epsilon"
 )
 
+// Interpreter implements the mechanoid engine.Interpreter interface for Epsilon
 type Interpreter struct {
 	modules  wypes.Modules
+	store    wypes.Store
 	runtime  *epsilonlib.Runtime
 	instance *epsilonlib.ModuleInstance
+	memory   *EpsilonMemory
 }
 
+// Name returns the name of the interpreter
 func (i *Interpreter) Name() string {
 	return "epsilon"
 }
 
+// Init initializes the interpreter
 func (i *Interpreter) Init() error {
+	mechanoid.DebugMemory("Interpreter Init")
+
+	max := uint32(1)
+	mem := epsilonlib.NewMemory(epsilonlib.MemoryType{
+		Limits: epsilonlib.Limits{Min: 1, Max: &max},
+	})
+	i.memory = NewEpsilonMemory(mem)
+
 	return nil
 }
 
+// Load loads the code into the interpreter
 func (i *Interpreter) Load(code engine.Reader) error {
 	mechanoid.DebugMemory("Interpreter Load")
+
+	i.runtime = epsilonlib.NewRuntime().WithConfig(epsilonlib.Config{
+		CallStackPreallocationSize: 0,
+		MaxCallStackDepth:          512,
+	})
+
+	i.store = wypes.Store{
+		Refs:   wypes.NewMapRefs(),
+		Memory: i.memory,
+	}
 
 	builder, err := i.defineModules()
 	if err != nil {
 		return fmt.Errorf("register epsilon host modules: %v", err)
 	}
 
-	runtime := epsilonlib.NewRuntime()
-	i.runtime = runtime
+	builder.AddMemory("env", "memory", i.memory.mem)
 
-	instance, err := runtime.InstantiateModuleWithImports(code, builder.Build())
+	instance, err := i.runtime.InstantiateModuleWithImports(code, builder.Build())
 	if err != nil {
 		return fmt.Errorf("instantiate epsilon module: %v", err)
 	}
 
 	i.instance = instance
+
 	return nil
 }
 
+// Run runs the loaded code in the interpreter
 func (i *Interpreter) Run() (engine.Instance, error) {
 	mechanoid.DebugMemory("Interpreter Run")
-
-	if i.instance == nil {
-		return nil, errors.New("no module instance, did you call Load()?")
-	}
 
 	_, err := i.instance.Invoke("_initialize")
 	if err != nil {
@@ -61,10 +82,22 @@ func (i *Interpreter) Run() (engine.Instance, error) {
 	return &Instance{instance: i.instance}, nil
 }
 
+// Halt halts the interpreter and frees resources
 func (i *Interpreter) Halt() error {
+	mechanoid.DebugMemory("Interpreter Halt")
+
+	if i.instance != nil {
+		i.instance = nil
+	}
+
+	i.store.Memory = nil
+	i.store = wypes.Store{}
+	i.runtime = nil
+
 	return nil
 }
 
+// SetModules sets the host modules for the interpreter
 func (i *Interpreter) SetModules(modules wypes.Modules) error {
 	mechanoid.Log("Registering host modules...")
 
@@ -87,19 +120,19 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 
 func (i *Interpreter) defineModules() (*epsilonlib.ImportBuilder, error) {
 	builder := epsilonlib.NewImportBuilder()
-	refs := wypes.NewMapRefs()
 	for modName, mod := range i.modules {
-		err := i.defineModule(builder, modName, mod, refs)
+		err := i.defineModule(builder, modName, mod)
 		if err != nil {
 			return nil, fmt.Errorf("define module %s: %v", modName, err)
 		}
 	}
+
 	return builder, nil
 }
 
-func (i *Interpreter) defineModule(builder *epsilonlib.ImportBuilder, modName string, m wypes.Module, refs wypes.Refs) error {
+func (i *Interpreter) defineModule(builder *epsilonlib.ImportBuilder, modName string, m wypes.Module) error {
 	for funcName, funcDef := range m {
-		fn := i.adaptHostFunc(funcDef, refs)
+		fn := i.adaptHostFunc(funcDef)
 		builder.AddHostFunc(modName, funcName, fn)
 	}
 	return nil
@@ -107,7 +140,7 @@ func (i *Interpreter) defineModule(builder *epsilonlib.ImportBuilder, modName st
 
 type epsilonFunc func(...any) []any
 
-func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) epsilonFunc {
+func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc) epsilonFunc {
 	return func(stack ...any) []any {
 		// Convert []any to []uint64
 		uint64Stack := make([]uint64, len(stack))
@@ -128,37 +161,23 @@ func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc, refs wypes.Refs) epsilonF
 			}
 		}
 
-		var adaptedMemory wypes.Memory
-		mem, _ := i.instance.GetMemory("memory")
-		if mem != nil {
-			// TODO: handle memory properly
-			// adaptedMemory = wypes.SliceMemory(mem)
-		}
 		adaptedStack := wypes.SliceStack(uint64Stack)
-		// how do we handle this with epsilon?
-		//adaptedMemory := wypes.SliceMemory(mem)
-		store := wypes.Store{
-			Memory:  adaptedMemory,
-			Stack:   &adaptedStack,
-			Refs:    refs,
-			Context: nil,
-		}
-		hf.Call(&store)
+		i.store.Stack = &adaptedStack
+		hf.Call(&i.store)
 		return stack
 	}
 }
 
+// MemoryData reads data from the interpreter's memory at the given pointer and size
 func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
-	memory, err := i.instance.GetMemory("memory")
-	if err != nil {
-		return nil, err
+	if i.memory == nil {
+		return nil, errors.New("memory not initialized")
 	}
-	if memory == nil {
-		return nil, errors.New("memory not found")
+
+	data, ok := i.memory.Read(wypes.Addr(ptr), sz)
+	if !ok {
+		return nil, fmt.Errorf("failed to read memory at ptr %d size %d", ptr, sz)
 	}
-	data, err := memory.Get(ptr, 0, sz)
-	if err != nil {
-		return nil, err
-	}
+
 	return data, nil
 }
