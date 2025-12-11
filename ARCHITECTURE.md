@@ -49,7 +49,7 @@ flowchart LR
 
 ### Interpreter
 
-The Interpreter is an interface to whichever WebAssembly interpreter is to be used for this application. The default interpreter for Mechanoid is [Wazero](https://github.com/tetratelabs/wazero).
+The Interpreter is an interface to whichever WebAssembly interpreter is to be used for this application. The default interpreter for Mechanoid is [Epsilon](https://github.com/ziggy42/epsilon).
 
 ### FileStore
 

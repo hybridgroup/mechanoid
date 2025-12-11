@@ -14,7 +14,7 @@ var (
 	}
 
 	buildFlags = []cli.Flag{
-		&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "wasman", Usage: "WebAssembly interpreter to use (epsilon, wasman, wazero)"},
+		&cli.StringFlag{Name: "interpreter", Aliases: []string{"i"}, Value: "epsilon", Usage: "WebAssembly interpreter to use (epsilon, wasman)"},
 		&cli.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "perform additional logging for debugging"},
 		&cli.StringSliceFlag{
 			Name:  "params",
