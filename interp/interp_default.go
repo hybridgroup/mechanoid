@@ -1,12 +1,12 @@
-//go:build !(wasman || wazero || epsilon)
+//go:build !(wasman || epsilon)
 
 package interp
 
 import (
 	"github.com/hybridgroup/mechanoid/engine"
-	"github.com/hybridgroup/mechanoid/interp/wazero"
+	"github.com/hybridgroup/mechanoid/interp/epsilon"
 )
 
 func NewInterpreter() engine.Interpreter {
-	return &wazero.Interpreter{}
+	return &epsilon.Interpreter{}
 }

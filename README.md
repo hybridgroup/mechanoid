@@ -171,22 +171,20 @@ func pongFunc() wypes.Void {
 You can compile and flash the application and the WASM program onto an Adafruit PyBadge (an ARM 32-bit microcontroller with 192k of RAM) with the `mecha flash` command:
 
 ```bash
-$ mecha flash -i wazero -m pybadge
-Building module ping
+$ mecha flash -m -i epsilon pybadge
+Building TinyGo module ping
 Done.
    code    data     bss |   flash     ram
-      9       0       0 |       9       0
+     14       0       0 |      14       0
 Application built. Now flashing...
    code    data     bss |   flash     ram
- 328988   66056    7112 |  395044   73168
-
+ 139040    2204    6784 |  141244    8988
 Connected to /dev/ttyACM0. Press Ctrl-C to exit.
 Mechanoid engine starting...
-Initializing engine using interpreter wazero
+Initializing engine using interpreter epsilon
 Defining host function...
+Registering host modules...
 Loading and running WASM code...
-Calling ping...
-pong
 Calling ping...
 pong
 Calling ping...
@@ -203,8 +201,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for more information.
 
 ## Supported Runtime Interpreters
 
+- [epsilon](https://github.com/ziggy42/epsilon)
 - [wasman](https://github.com/hybridgroup/wasman)
-- [wazero](https://github.com/tetratelabs/wazero) - at the moment, not functional due to upstream changes.
 
 ## Goals
 
