@@ -6,7 +6,7 @@ github.com/orsinium-labs/wypes v0.3.4 h1:ZLJVeWQDCqAEKG46RSE7upJ7ZowZSBkxok96tHE
 github.com/orsinium-labs/wypes v0.3.4/go.mod h1:FSNWGo8I6/D5RYXMkCxyu71TXJAlwJGQUxgs4i6MAwo=
 github.com/tetratelabs/wazero v1.10.1 h1:2DugeJf6VVk58KTPszlNfeeN8AhhpwcZqkJj2wwFuH8=
 github.com/tetratelabs/wazero v1.10.1/go.mod h1:DRm5twOQ5Gr1AoEdSi0CLjDQF1J9ZAuyqFIjl1KKfQU=
-github.com/ziggy42/epsilon v0.0.2-0.20251210002722-1c0f18b8b8c6 h1:fbA728oFYlCXpdu/eepTReEO70AgswVDZue6QAu3lmA=
-github.com/ziggy42/epsilon v0.0.2-0.20251210002722-1c0f18b8b8c6/go.mod h1:pHHK6D25e0EHbQhwcokLyD+7kj+4BGRXwGE7V+BT6jE=
+github.com/ziggy42/epsilon v0.0.3-0.20251219201800-c4585ff969d7 h1:g41IYRckKaKxStbbzSY4palc+m5mqnZcbq121T0dvok=
+github.com/ziggy42/epsilon v0.0.3-0.20251219201800-c4585ff969d7/go.mod h1:pHHK6D25e0EHbQhwcokLyD+7kj+4BGRXwGE7V+BT6jE=
 tinygo.org/x/tinyfs v0.5.0 h1:1nLSvtvvoNcK3Ii+Dib9MVe4y/Fnp2iMgzbKgADGfbs=
 tinygo.org/x/tinyfs v0.5.0/go.mod h1:45hZCJ5e4rJxc3BaJTy1qhe5N+LbF/CpuFS4jPhhYuo=

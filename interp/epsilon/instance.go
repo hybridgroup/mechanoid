@@ -4,10 +4,12 @@ import (
 	epsilonlib "github.com/ziggy42/epsilon/epsilon"
 )
 
+// Instance implements the engine.Instance interface for Epsilon
 type Instance struct {
 	instance *epsilonlib.ModuleInstance
 }
 
+// Call invokes a function in the Epsilon instance with the given name and arguments
 func (i *Instance) Call(name string, args ...any) (any, error) {
 	if len(args) == 0 {
 		results, err := i.instance.Invoke(name)
