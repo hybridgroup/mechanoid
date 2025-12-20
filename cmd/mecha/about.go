@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/hybridgroup/mechanoid"
 	"github.com/urfave/cli/v2"
 )
 
@@ -22,7 +23,7 @@ var logo = `
 
 func about(cCtx *cli.Context) error {
 	fmt.Println(logo)
-	fmt.Println("Version:", Version())
+	fmt.Println("Version:", mechanoid.Version())
 
 	return nil
 }
