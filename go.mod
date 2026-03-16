@@ -12,8 +12,9 @@ require (
 	github.com/briandowns/spinner v1.23.2
 	github.com/hashicorp/go-getter v1.8.3
 	github.com/urfave/cli/v2 v2.27.7
-	github.com/ziggy42/epsilon v0.0.3-0.20251219201800-c4585ff969d7
 )
+
+require github.com/ziggy42/epsilon v0.0.4
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -61,7 +62,7 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.27.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/term v0.34.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect

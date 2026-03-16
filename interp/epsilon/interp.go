@@ -19,6 +19,8 @@ type Interpreter struct {
 	runtime  *epsilonlib.Runtime
 	instance *epsilonlib.ModuleInstance
 	memory   *EpsilonMemory
+
+	hostfuncs map[string]map[string]any
 }
 
 // Name returns the name of the interpreter
@@ -35,6 +37,9 @@ func (i *Interpreter) Init() error {
 		Limits: epsilonlib.Limits{Min: 1, Max: &max},
 	})
 	i.memory = NewEpsilonMemory(mem)
+
+	hostfuncs := make(map[string]map[string]any)
+	i.hostfuncs = hostfuncs
 
 	return nil
 }
@@ -53,14 +58,14 @@ func (i *Interpreter) Load(code engine.Reader) error {
 		Memory: i.memory,
 	}
 
-	builder, err := i.defineModules()
+	err := i.defineModules()
 	if err != nil {
 		return fmt.Errorf("register epsilon host modules: %v", err)
 	}
 
-	builder.AddMemory("env", "memory", i.memory.mem)
+	i.defineMemory()
 
-	instance, err := i.runtime.InstantiateModuleWithImports(code, builder.Build())
+	instance, err := i.runtime.InstantiateModuleWithImports(code, i.hostfuncs)
 	if err != nil {
 		return fmt.Errorf("instantiate epsilon module: %v", err)
 	}
@@ -118,30 +123,36 @@ func (i *Interpreter) SetModules(modules wypes.Modules) error {
 	return nil
 }
 
-func (i *Interpreter) defineModules() (*epsilonlib.ImportBuilder, error) {
-	builder := epsilonlib.NewImportBuilder()
+func (i *Interpreter) defineModules() error {
 	for modName, mod := range i.modules {
-		err := i.defineModule(builder, modName, mod)
+		err := i.defineModule(modName, mod)
 		if err != nil {
-			return nil, fmt.Errorf("define module %s: %v", modName, err)
+			return fmt.Errorf("define module %s: %v", modName, err)
 		}
 	}
 
-	return builder, nil
-}
-
-func (i *Interpreter) defineModule(builder *epsilonlib.ImportBuilder, modName string, m wypes.Module) error {
-	for funcName, funcDef := range m {
-		fn := i.adaptHostFunc(funcDef)
-		builder.AddHostFunc(modName, funcName, fn)
-	}
 	return nil
 }
 
-type epsilonFunc func(...any) []any
+func (i *Interpreter) defineModule(modName string, m wypes.Module) error {
+	builder := epsilonlib.NewModuleImportBuilder(modName)
+	for funcName, funcDef := range m {
+		fn := i.adaptHostFunc(funcDef)
+		builder.AddHostFunc(funcName, fn)
+	}
+
+	builderResult := builder.Build()
+	for k, v := range builderResult {
+		i.hostfuncs[k] = v
+	}
+
+	return nil
+}
+
+type epsilonFunc func(*epsilonlib.ModuleInstance, ...any) []any
 
 func (i *Interpreter) adaptHostFunc(hf wypes.HostFunc) epsilonFunc {
-	return func(stack ...any) []any {
+	return func(instance *epsilonlib.ModuleInstance, stack ...any) []any {
 		// Convert []any to []uint64
 		uint64Stack := make([]uint64, len(stack))
 		for idx, v := range stack {
@@ -180,4 +191,13 @@ func (i *Interpreter) MemoryData(ptr, sz uint32) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+func (i *Interpreter) defineMemory() {
+	builder := epsilonlib.NewModuleImportBuilder("env")
+	builder.AddMemory("memory", i.memory.mem)
+	builderResult := builder.Build()
+	for k, v := range builderResult {
+		i.hostfuncs[k] = v
+	}
 }
